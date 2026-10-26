@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script>
+var API_URL = "https://script.google.com/a/pto99.com/macros/s/AKfycbydPu9JO6AFYepdxoodcl9DqIZem-YvJ-LN6s_keYjRsQZIm1r3/exec";
+/* Los enlaces de la prueba técnica y de calificación se abren directamente en Apps Script */
+(function () { var q = new URLSearchParams(location.search); if (q.get("prueba") || q.get("calificar")) location.replace(API_URL + location.search); })();
+/* Reemplazo de google.script.run: cada llamada viaja a Apps Script con fetch */
+window.google = { script: { run: (function crear(ok, mal) { return new Proxy({}, { get: function (_, fn) {
+  if (fn === "withSuccessHandler") return function (f) { return crear(f, mal); };
+  if (fn === "withFailureHandler") return function (f) { return crear(ok, f); };
+  return function () { var args = Array.prototype.slice.call(arguments);
+    fetch(API_URL, { method: "POST", redirect: "follow", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: fn, args: args }) })
+      .then(function (r) { return r.json(); })
+      .then(function (r) { if (r.ok) { if (ok) ok(r.result); } else if (mal) mal(new Error(r.error)); })
+      .catch(function () { if (mal) mal(new Error("No pudimos conectarnos. Revisa tu internet e inténtalo de nuevo.")); });
+  }; } }); })() } };
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trabaja con nosotros — PUNTO 99</title>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="theme-color" content="#3a3ec4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+   
+  :root {
+    --azul: #3a3ec4; --azul-2: #2c2f9e; --azul-claro: #eceefb; --azul-medio: #c9cbf2;
+    --amarillo: #eadf72; --amarillo-claro: #fbf7dc;
+    --lima: #c2e070; --lima-claro: #eff7d8;
+    --rojo: #cf4a46; --rojo-claro: #fbeceb;
+    --negro: #1c1c1a; --blanco: #ffffff;
+    --tinta: #1c1c1a; --suave: #5a5a55; --tenue: #8d8d87;
+    --gris-claro: #f1f1ee; --borde: #e2e2dd; --borde-2: #cdcdc7;
+    --fondo: #f3f3f8; --tarjeta: #ffffff;
+    --radio: 4px; --radio-chico: 4px;
+    --sombra: 0 2px 10px rgba(28,28,26,.06);
+    --sombra-alta: 0 14px 34px rgba(44,47,158,.16);
+    --f-titulo: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --f-comp: "Loto", "Lexend", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --rapido: .18s cubic-bezier(.2,.8,.2,1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; color: var(--tinta); font-family: var(--f-titulo); font-size: 14.5px; line-height: 1.45;
+    -webkit-text-size-adjust: 100%; }
+  html { background: var(--fondo); }
+  body { background: transparent; min-height: 100vh; }
+  .oculto { display: none !important; }
+  a { color: var(--azul); }
+  h1, h2, h3, h4 { margin: 0; font-family: var(--f-titulo); font-weight: 700; letter-spacing: -.02em; }
+  .tenue { color: var(--suave); }
+  .chico { font-size: 12.5px; }
+
+   
+  .fondo-color { position: fixed; inset: -20%; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(38% 42% at 12% 18%, rgba(58,62,196,.28), transparent 70%),
+      radial-gradient(34% 40% at 88% 22%, rgba(194,224,112,.45), transparent 70%),
+      radial-gradient(40% 44% at 78% 88%, rgba(234,223,114,.40), transparent 70%),
+      radial-gradient(30% 34% at 22% 86%, rgba(58,62,196,.16), transparent 70%),
+      radial-gradient(24% 26% at 52% 50%, rgba(207,74,70,.08), transparent 70%),
+      var(--fondo);
+    animation: flotar 38s ease-in-out infinite alternate; }
+  @keyframes flotar {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(3%, -2%, 0) scale(1.05); }
+    100% { transform: translate3d(-3%, 2%, 0) scale(1.02); }
+  }
+   
+  .marca-agua { position: fixed; z-index: -1; right: -6vw; bottom: -18vw; font-family: var(--f-titulo); font-weight: 400;
+    font-size: 56vw; line-height: .8; letter-spacing: -.06em; color: rgba(58,62,196,.07); pointer-events: none; user-select: none; }
+
+   
+  .logo99 { display: block; width: 58px; height: auto; flex: none; transition: transform var(--rapido); }
+  .logo99:hover { transform: rotate(-4deg) scale(1.05); }
+
+   
+  .etiqueta { display: inline-block; background: var(--lima); color: var(--negro); font-family: var(--f-comp);
+    font-size: 11.5px; font-weight: 500; letter-spacing: .02em; text-transform: uppercase; padding: 3px 8px; line-height: 1.3; border-radius: 2px; }
+  .etiqueta.amarilla { background: var(--amarillo); }
+  .etiqueta.blanca { background: var(--blanco); }
+
+   
+  .campo { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 13px; }
+  .campo .ayuda { font-family: var(--f-comp); font-weight: 400; color: var(--tenue); font-size: 12px; }
+  input, select, textarea { font: inherit; font-weight: 400; color: var(--tinta); background: #fff;
+    border: 1px solid var(--borde-2); border-radius: var(--radio-chico); padding: 10px 12px; width: 100%; min-height: 42px;
+    transition: border-color var(--rapido), box-shadow var(--rapido); }
+  input:hover, select:hover, textarea:hover { border-color: var(--azul-medio); }
+  textarea { resize: vertical; min-height: 96px; }
+  input:focus, select:focus, textarea:focus { outline: 0; border-color: var(--azul); box-shadow: 0 0 0 4px rgba(58,62,196,.16); }
+  .rejilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; }
+  .completo { grid-column: 1 / -1; }
+
+   
+  .btn { position: relative; overflow: hidden; font: inherit; font-weight: 700; font-size: 13.5px; display: inline-flex; align-items: center;
+    justify-content: center; gap: 6px; min-height: 40px; padding: 9px 16px; border-radius: var(--radio); border: 1px solid var(--negro);
+    background: #fff; color: var(--negro); cursor: pointer; text-decoration: none; white-space: nowrap; user-select: none;
+    transition: transform var(--rapido), box-shadow var(--rapido), background var(--rapido), color var(--rapido), border-color var(--rapido); }
+  .btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--negro); }
+  .btn:active { transform: translate(0, 0); box-shadow: 0 0 0 var(--negro); }
+  .btn:focus-visible { outline: 0; box-shadow: 0 0 0 4px rgba(58,62,196,.25); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn.primario { background: var(--azul); border-color: var(--azul); color: #fff; }
+  .btn.primario:hover { background: var(--azul-2); border-color: var(--azul-2); box-shadow: 4px 4px 0 var(--lima); }
+  .btn.primario:active { box-shadow: 0 0 0 var(--lima); }
+  .btn.fantasma { border-color: transparent; background: transparent; color: var(--tinta); }
+  .btn.fantasma:hover { background: rgba(255,255,255,.85); border-color: var(--borde-2); box-shadow: 3px 3px 0 var(--azul-medio); }
+  .btn.mini { min-height: 34px; padding: 6px 11px; font-size: 12.5px; }
+  .btn .ico { display: inline-block; transition: transform .4s ease; }
+  .btn:hover .ico { transform: rotate(180deg); }
+   
+  .onda { position: absolute; border-radius: 50%; pointer-events: none; transform: scale(0); background: currentColor; opacity: .25;
+    animation: onda .55s ease-out forwards; }
+  @keyframes onda { to { transform: scale(2.6); opacity: 0; } }
+
+   
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; font-family: var(--f-comp); font-size: 11.5px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: .02em; white-space: nowrap; line-height: 1.3; border-radius: 2px; }
+  .chip::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .7; }
+  .chip.abierto { background: var(--lima); color: #2f3a10; }
+  .chip.abierto::before { animation: latido 1.8s ease-in-out infinite; }
+  .chip.pausa { background: var(--amarillo); color: #4a4310; }
+  .chip.cerrado { background: var(--gris-claro); color: var(--suave); }
+  @keyframes latido { 50% { transform: scale(1.6); opacity: .35; } }
+
+  .alerta { padding: 10px 12px; font-size: 13.5px; border-radius: var(--radio); }
+  .alerta.error { background: var(--rojo-claro); color: var(--rojo); }
+
+  .giro { width: 36px; height: 36px; border: 3px solid var(--azul-medio); border-top-color: var(--azul); border-radius: 50%;
+    animation: giro .9s linear infinite; margin: 0 auto; }
+  @keyframes giro { to { transform: rotate(360deg); } }
+
+   
+  .procesando { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px;
+    background: rgba(28,28,26,.42); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); animation: aparecer .18s ease-out; }
+  .proc-caja { width: 100%; max-width: 360px; background: #fff; border-radius: 10px; padding: 28px 26px 24px; text-align: center;
+    box-shadow: 8px 8px 0 var(--azul), 0 24px 60px rgba(0,0,0,.25); animation: subir .28s cubic-bezier(.2,.9,.3,1.2); }
+  .proc-icono { width: 64px; height: 64px; margin: 0 auto 16px; position: relative; }
+  .proc-icono .anillo { position: absolute; inset: 0; border-radius: 50%; border: 5px solid var(--azul-claro);
+    border-top-color: var(--azul); border-right-color: var(--lima); animation: giro .8s linear infinite; }
+  .proc-icono .centro { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; font-size: 18px; letter-spacing: -.04em; color: var(--azul); }
+  .proc-caja h3 { font-size: 20px; margin-bottom: 6px; }
+  .proc-caja p { margin: 0; font-family: var(--f-comp); font-size: 13px; color: var(--suave); white-space: pre-wrap; text-align: center; }
+  .proc-caja .puntos::after { content: ''; animation: puntos 1.2s steps(4, end) infinite; }
+  @keyframes puntos { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+  .proc-caja .acciones { margin-top: 18px; display: flex; justify-content: center; }
+  .proc-caja.ok .anillo, .proc-caja.error .anillo { animation: none; border-color: transparent; }
+  .proc-caja.ok .proc-icono { background: var(--lima); border-radius: 50%; animation: pop .35s cubic-bezier(.2,.9,.3,1.4); }
+  .proc-caja.ok .centro { color: #2f3a10; font-size: 30px; }
+  .proc-caja.error .proc-icono { background: var(--rojo-claro); border-radius: 50%; animation: pop .35s cubic-bezier(.2,.9,.3,1.4); }
+  .proc-caja.error .centro { color: var(--rojo); font-size: 28px; }
+  .proc-caja.error { box-shadow: 8px 8px 0 var(--rojo), 0 24px 60px rgba(0,0,0,.25); }
+  .proc-caja.ok { box-shadow: 8px 8px 0 var(--lima), 0 24px 60px rgba(0,0,0,.25); }
+  .proc-caja.error p { text-align: left; max-height: 220px; overflow: auto; }
+  @keyframes aparecer { from { opacity: 0; } }
+  @keyframes subir { from { opacity: 0; transform: translateY(18px) scale(.96); } }
+  @keyframes pop { 0% { transform: scale(.4); } 100% { transform: scale(1); } }
+  @keyframes entrar { from { opacity: 0; transform: translateY(10px); } }
+
+  @media (max-width: 640px) {
+    .rejilla { grid-template-columns: 1fr; }
+    input, select, textarea { font-size: 16px; }    
+    .btn:hover { transform: none; box-shadow: none; }    
+    .btn:active { transform: scale(.97); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+  <style>
+     
+    .barra { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px; padding: 12px 28px;
+      background: rgba(255,255,255,.78); border-bottom: 1px solid rgba(28,28,26,.08); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .barra .espacio { flex: 1; }
+    .pasos { display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; }
+    .pasos li { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 99px; font-family: var(--f-comp);
+      font-size: 12.5px; color: var(--suave); background: rgba(255,255,255,.7); transition: background var(--rapido), color var(--rapido); }
+    .pasos li b { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--gris-claro);
+      font-family: var(--f-titulo); font-size: 12px; transition: background var(--rapido), color var(--rapido); }
+    .pasos li.activo { background: var(--azul); color: #fff; }
+    .pasos li.activo b { background: var(--lima); color: #2f3a10; }
+    .pasos li.hecho b { background: var(--lima); color: #2f3a10; }
+    .pasos li.hecho b::after { content: '✓'; }
+    .pasos li.hecho b span { display: none; }
+
+    main { max-width: 980px; margin: 0 auto; padding: 30px 24px 64px; }
+    .hero { margin-bottom: 22px; animation: entrar .45s ease-out both; }
+    .hero h1 { font-size: 46px; line-height: .95; letter-spacing: -.045em; }
+    .hero h1 span { color: var(--azul); }
+    .hero p { font-family: var(--f-comp); font-size: 14px; color: var(--suave); margin: 10px 0 0; max-width: 560px; }
+
+    .tarjeta { background: rgba(255,255,255,.96); border-radius: 12px; box-shadow: var(--sombra); padding: 26px; margin-bottom: 16px; animation: entrar .4s ease-out both; }
+    .centro { text-align: center; padding: 54px 26px; }
+    .centro h2 { font-size: 26px; margin: 14px 0 6px; letter-spacing: -.03em; }
+    .centro p { font-family: var(--f-comp); color: var(--suave); max-width: 480px; margin: 0 auto; }
+
+     
+    .vac { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border: 1px solid var(--borde); border-radius: 10px; background: #fff;
+      transition: transform var(--rapido), box-shadow var(--rapido), border-color var(--rapido); animation: entrar .35s ease-out both; animation-delay: calc(var(--i,0) * 50ms); }
+    .vac + .vac { margin-top: 10px; }
+    .vac:hover { transform: translateY(-2px); box-shadow: var(--sombra-alta); border-color: var(--azul-medio); }
+    .vac .info { flex: 1; min-width: 0; }
+    .vac .titulo { font-weight: 700; font-size: 17px; letter-spacing: -.01em; }
+    .vac .resumen { font-family: var(--f-comp); font-size: 13px; color: var(--suave); margin-top: 4px; }
+
+    .vac-sel { position: relative; overflow: hidden; background: linear-gradient(120deg, var(--azul) 0%, #4f53d2 60%, #5d61d8 100%); color: #fff; }
+    .vac-sel::after { content: '99'; position: absolute; right: -8px; bottom: -46px; font-size: 170px; font-weight: 700; letter-spacing: -.06em;
+      color: rgba(255,255,255,.08); pointer-events: none; }
+    .vac-sel > * { position: relative; z-index: 1; }
+    .vac-sel h2 { font-size: 32px; line-height: 1; letter-spacing: -.035em; margin: 12px 0 10px; }
+    .vac-sel p { font-family: var(--f-comp); font-size: 14px; margin: 0; max-width: 640px; color: rgba(255,255,255,.9); line-height: 1.55; }
+    .vac-sel .btn { margin-top: 14px; border-color: rgba(255,255,255,.85); background: transparent; color: #fff; }
+    .vac-sel .btn:hover { background: #fff; color: var(--azul); box-shadow: 4px 4px 0 var(--lima); }
+
+    .seccion-t { display: flex; align-items: center; gap: 10px; font-size: 18px; margin: 26px 0 14px; padding-top: 22px; border-top: 1px solid var(--borde); }
+    .seccion-t:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+    .seccion-t .n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--azul-claro); color: var(--azul); font-size: 13px; }
+
+    .soltar { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center;
+      min-height: 116px; border: 2px dashed var(--borde-2); border-radius: 10px; background: #fafaff; color: var(--suave);
+      font-weight: 500; cursor: pointer; padding: 12px; font-size: 13.5px; transition: border-color var(--rapido), background var(--rapido), transform var(--rapido); }
+    .soltar:hover, .soltar.sobre { border-color: var(--azul); background: var(--azul-claro); transform: translateY(-2px); }
+    .soltar.lleno { border-style: solid; border-color: var(--lima); background: var(--lima-claro); color: #2f3a10; }
+    .soltar input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .soltar .ico { font-size: 22px; font-weight: 700; color: var(--azul); }
+    .soltar.lleno .ico { color: #2f3a10; }
+
+    .check { display: flex; gap: 10px; align-items: flex-start; font-family: var(--f-comp); font-size: 13px; color: var(--suave); cursor: pointer; }
+    .check input { width: 20px; height: 20px; min-height: 0; margin: 0; flex: none; accent-color: var(--azul); }
+    .enviar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+    .enviar .btn { min-height: 50px; padding: 12px 24px; font-size: 15.5px; }
+
+
+
+     
+    .antes h2 { font-size: 24px; letter-spacing: -.03em; margin: 12px 0 6px; }
+    .antes .intro { font-family: var(--f-comp); font-size: 14px; color: var(--suave); margin: 0 0 16px; }
+    .requisitos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .requisitos li { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 12px;
+      border: 1px solid var(--borde); border-radius: 10px; background: #fff; animation: entrar .35s ease-out both; }
+    .requisitos li:nth-child(2) { animation-delay: .05s; } .requisitos li:nth-child(3) { animation-delay: .1s; }
+    .requisitos li:nth-child(4) { animation-delay: .15s; } .requisitos li:nth-child(5) { animation-delay: .2s; } .requisitos li:nth-child(6) { animation-delay: .25s; }
+    .requisitos .ico-r { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--azul-claro); font-size: 18px; }
+    .requisitos b { display: block; font-size: 14.5px; }
+    .requisitos div span { display: block; font-family: var(--f-comp); font-size: 12.5px; color: var(--suave); margin-top: 2px; line-height: 1.45; }
+    .requisitos em { font-style: normal; font-family: var(--f-comp); font-size: 10.5px; text-transform: uppercase; letter-spacing: .03em;
+      padding: 2px 7px; border-radius: 2px; background: var(--gris-claro); color: var(--suave); white-space: nowrap; }
+    .requisitos em.obl { background: var(--lima); color: #2f3a10; }
+    .nota-antes { font-family: var(--f-comp); font-size: 12.5px; color: var(--suave); background: var(--amarillo-claro); padding: 10px 12px; border-radius: 8px; margin: 16px 0 0; }
+    #btnListo { margin-top: 18px; min-height: 52px; padding: 12px 24px; font-size: 15.5px; }
+    @media (max-width: 640px) {
+      .requisitos { grid-template-columns: 1fr; }
+      .antes h2 { font-size: 21px; }
+      #btnListo { width: 100%; }
+    }
+
+     
+    .combo { position: relative; }
+    .combo input { padding-right: 34px; }
+    .combo::after { content: '⌕'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--tenue); font-size: 17px; pointer-events: none; }
+    .combo-lista { position: absolute; z-index: 15; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none;
+      max-height: 248px; overflow-y: auto; background: #fff; border: 1px solid var(--borde-2); border-radius: 10px; box-shadow: var(--sombra-alta);
+      font-weight: 400; animation: entrar .15s ease-out; }
+    .combo-lista li { padding: 9px 10px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+    .combo-lista li small { color: var(--tenue); font-family: var(--f-comp); font-size: 11.5px; }
+    .combo-lista li b { color: var(--azul); }
+    .combo-lista li.activo, .combo-lista li:hover { background: var(--azul-claro); }
+    .combo-lista li.otra { border-top: 1px solid var(--borde); margin-top: 4px; color: var(--suave); }
+    .combo-lista li.nada { cursor: default; color: var(--suave); background: none; }
+    .combo.ok input { border-color: #9fc24a; }
+     
+    .rango { display: grid; grid-template-columns: 64px 1fr; gap: 8px; }
+    .rango .moneda { display: grid; place-items: center; border-radius: var(--radio-chico); background: var(--gris-claro); font-weight: 700; font-size: 13px; }
+
+     
+    .sala { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; animation: entrar .4s ease-out both; }
+    .escenario { position: relative; overflow: hidden; border-radius: 12px; padding: 24px; min-height: 540px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; background: linear-gradient(160deg, #ffffff 0%, var(--azul-claro) 55%, var(--lima-claro) 100%); box-shadow: var(--sombra); }
+    .escenario::after { content: '99'; position: absolute; left: -10px; bottom: -60px; font-size: 220px; font-weight: 700; letter-spacing: -.06em; color: rgba(58,62,196,.06); }
+    .escenario > * { position: relative; z-index: 1; }
+    .avatar-wrap { display: flex; flex-direction: column; align-items: center; }
+    #avatar { width: min(300px, 64vw); height: auto; border-radius: 50%; transition: box-shadow .3s; }
+    .avatar-wrap.hablando #avatar { box-shadow: 0 0 0 8px rgba(58,62,196,.16), 0 0 0 18px rgba(58,62,196,.07); }
+    .avatar-wrap.escuchando #avatar { box-shadow: 0 0 0 8px rgba(194,224,112,.5); animation: escucha 1.6s infinite; }
+    #ojos { transform-box: fill-box; transform-origin: center; transition: transform .07s; }
+    #ojos.parpadeo { transform: scaleY(.08); }
+    #avatarFoto { width: min(300px, 64vw); aspect-ratio: 1; object-fit: cover; border-radius: 50%; border: 6px solid #fff; box-shadow: var(--sombra);
+      transition: box-shadow .25s, transform .25s; }
+    .avatar-wrap.hablando #avatarFoto { box-shadow: 0 0 0 calc(6px + var(--voz, 0) * 12px) rgba(58,62,196,.18), var(--sombra); }
+    .avatar-wrap.escuchando #avatarFoto { box-shadow: 0 0 0 8px rgba(194,224,112,.55); }
+    .estado-avatar { margin-top: 14px; font-family: var(--f-comp); font-size: 12.5px; background: #fff; padding: 5px 12px; border-radius: 99px; box-shadow: var(--sombra); }
+    .subtitulo { margin-top: 18px; min-height: 66px; max-width: 460px; text-align: center; font-size: 17px; line-height: 1.5; }
+    .progreso { width: 100%; max-width: 380px; height: 6px; background: rgba(255,255,255,.8); border-radius: 99px; margin-top: 16px; overflow: hidden; }
+    #barraProgreso { height: 100%; width: 0; background: linear-gradient(90deg, var(--azul), var(--lima)); transition: width .5s; }
+    @keyframes respira { 50% { transform: translateY(-2px) rotate(.4deg); } }
+    @keyframes piensa { 50% { transform: rotate(-2.5deg) translateY(-2px); } }
+    @keyframes escucha { 50% { box-shadow: 0 0 0 16px rgba(194,224,112,.25); } }
+
+    .panel-chat { background: rgba(255,255,255,.97); border-radius: 12px; box-shadow: var(--sombra); display: flex; flex-direction: column; min-height: 540px; max-height: 78vh; }
+    .chat-cab { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--borde); }
+    .chat-cab .tenue { font-family: var(--f-comp); font-size: 12px; }
+    .chat { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .msg { max-width: 86%; padding: 10px 14px; border-radius: 14px; line-height: 1.5; white-space: pre-wrap; animation: entrar .25s ease-out both; }
+    .msg.ia { background: var(--azul-claro); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.yo { background: var(--azul); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg.escribiendo { color: var(--suave); }
+    .msg.escribiendo i { display: inline-block; width: 6px; height: 6px; margin: 0 2px; border-radius: 50%; background: var(--azul); animation: salto 1s infinite; }
+    .msg.escribiendo i:nth-child(2) { animation-delay: .15s; } .msg.escribiendo i:nth-child(3) { animation-delay: .3s; }
+    @keyframes salto { 50% { transform: translateY(-5px); opacity: .5; } }
+    .inicio { padding: 16px; border-top: 1px solid var(--borde); font-family: var(--f-comp); font-size: 13.5px; color: var(--suave); }
+    .inicio .btn { margin-top: 10px; width: 100%; min-height: 48px; font-size: 15px; }
+    .entrada { padding: 12px 16px 14px; border-top: 1px solid var(--borde); display: grid; gap: 10px; }
+    .turno-msg { font-family: var(--f-comp); font-size: 13px; color: var(--suave); text-align: center; }
+    .turno-msg:empty { display: none; }
+    .voz-panel { display: grid; grid-template-columns: 118px minmax(0, 1fr); gap: 14px; align-items: center; animation: entrar .25s ease-out both; }
+    .reloj { position: relative; width: 118px; height: 118px; }
+    .reloj svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .reloj .pista { fill: none; stroke: var(--gris-claro); stroke-width: 9; }
+    .reloj .avance { fill: none; stroke: var(--azul); stroke-width: 9; stroke-linecap: round; stroke-dasharray: 326.7; stroke-dashoffset: 0; transition: stroke-dashoffset .25s linear, stroke .2s; }
+    .reloj.grabando .avance { stroke: var(--rojo); }
+    .reloj.poco .avance { stroke: #e08a2e; }
+    .reloj-c { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+    .reloj-c b { font-size: 34px; line-height: 1; letter-spacing: -.03em; }
+    .reloj-c span { font-family: var(--f-comp); font-size: 11.5px; color: var(--suave); margin-top: 3px; }
+    .reloj.grabando .reloj-c span { color: var(--rojo); font-weight: 700; }
+    .reloj.grabando::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--rojo); opacity: .35; animation: aro 1.4s infinite; }
+    @keyframes aro { 50% { transform: scale(1.06); opacity: .08; } }
+    .vivo-col { display: grid; gap: 8px; min-width: 0; }
+    .vivo { min-height: 58px; max-height: 120px; overflow: auto; background: var(--gris-claro); border-radius: 8px; padding: 10px 12px; font-size: 14px; line-height: 1.45; color: var(--tinta); }
+    .vivo:empty::before { content: attr(data-vacio); color: var(--tenue); font-family: var(--f-comp); font-size: 13px; }
+    .nivel { height: 8px; border-radius: 99px; background: var(--gris-claro); overflow: hidden; }
+    .nivel i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--lima), var(--azul)); transition: width .08s linear; }
+    .escrito-panel { display: grid; gap: 8px; animation: entrar .25s ease-out both; }
+    .fila-escrito { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    .reloj-mini { font-family: var(--f-comp); font-weight: 700; font-size: 13px; color: var(--azul); background: var(--azul-claro); padding: 3px 10px; border-radius: 99px; }
+    .reloj-mini.poco { color: var(--rojo); background: var(--rojo-claro); }
+    .pie-entrada { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .enlace-modo { background: none; border: 0; padding: 4px 0; font: inherit; font-family: var(--f-comp); font-size: 13px; font-weight: 500; color: var(--azul); text-decoration: underline; cursor: pointer; }
+    @media (max-width: 760px) { .voz-panel { grid-template-columns: 96px minmax(0, 1fr); } .reloj { width: 96px; height: 96px; } .reloj-c b { font-size: 28px; } }
+    .entrada textarea { min-height: 80px; }
+    .acciones-chat { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+    .acciones-chat .primario { margin-left: auto; }
+    .btn.mic.grabando { background: var(--rojo-claro); border-color: var(--rojo); color: var(--rojo); animation: latido-btn 1.2s infinite; }
+    @keyframes latido-btn { 50% { box-shadow: 0 0 0 6px rgba(207,74,70,.15); } }
+    .terminar { font: inherit; font-family: var(--f-comp); font-size: 12.5px; border: 0; background: none; color: var(--suave); text-decoration: underline; cursor: pointer; padding: 8px 0 0; }
+
+    .fin-icono { width: 76px; height: 76px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center; background: var(--lima);
+      color: #2f3a10; font-size: 36px; font-weight: 700; animation: pop .45s cubic-bezier(.2,.9,.3,1.4); }
+
+    @media (max-width: 860px) {
+      .sala { grid-template-columns: 1fr; }
+      .escenario { min-height: 0; padding: 14px 16px 12px; }
+      #avatar, #avatarFoto { width: min(140px, 38vw); }
+      .subtitulo { display: none; }                  
+      .panel-chat { min-height: 0; max-height: none; }
+      .chat { max-height: 42vh; }
+       
+      .entrada { position: sticky; bottom: 0; z-index: 5; background: #fff; box-shadow: 0 -8px 20px rgba(28,28,26,.08); border-radius: 12px 12px 0 0; }
+    }
+    @media (max-width: 640px) {
+      .barra { padding: 10px 16px; gap: 10px; }
+      .barra .etiqueta { display: none; }
+      .pasos li { padding: 4px; font-size: 0; }
+      .pasos li b { font-size: 12px; }
+      .pasos li.activo { padding-right: 10px; font-size: 12px; }
+      main { padding: 20px 16px 48px; }
+      .hero h1 { font-size: 32px; }
+      .tarjeta { padding: 18px 16px; }
+      .vac { flex-direction: column; align-items: stretch; }
+      .vac-sel h2 { font-size: 26px; }
+      .enviar .btn { width: 100%; }
+      .marca-agua { font-size: 90vw; right: -18vw; bottom: -30vw; }
+    }
+  </style>
+</head>
+<body>
+<div class="fondo-color" aria-hidden="true"></div>
+<div class="marca-agua" aria-hidden="true">99</div>
+
+<header class="barra">
+  
+<img class="logo99" alt="Punto 99" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAa0AAADdCAYAAAAIAy1CAAAkEElEQVR42u2de9zWU7r/3086qDwkqVBSkkoURbbzaZwPvxrDntlOgzEY4zDmt5nNjPNgG2SPIcbsGRszjN9gD9GMIRIiEaUkUTmUHIscovr9sVbNU57D/b3v732va63v5/16Pa/H4X7uda21Pt/vtY7XVVdf3xEhImAtoDOwPrAu0BFoD7QF2vjfAEuBr/zvL4ElwCfAYuBD4HM1pagyHbxOOwH1XqftgXbA2l7LNNDpMq/Lz71WFwEf&#43;x&#43;xBq3VBMIQnYGtgf7&#43;Z3OgF9DTvwTy4DPgXeBNYC4wE3gVmA68rC4QJdINGNSIVjcB1supjKXAfGCe1&#43;prDbQ6zTu7wlGnmZYIyK7AfsBu/gWwvgGb3gCmAOOAv/mXhBB7NtDqwBwdUyXMA14EHgUeLsqgS05L1JKewA&#43;B7wG9I7J7MvB7YHRRR7cFpA9wotdqr4jsngL8AbiZRJfC5bREtekGXAkcm1CdLgV&#43;rq5NclB1GXB0QnW6EvgZsEJOS4jm2R94KPE6LgWOAe5Sd0fN/wHuLYBWjwfuiL0iraRXkTPj/KjuoQLUtS1wp6/vLer6uAbsDbR6b0G0eruv7x/ktETR6YM72bQC2KOgbXCCr/99koNp&#43;gFzgOUF1uqxMWtVTktUwg7eWc3GHfkVcJh/ITzsnbmwwY7eWc0kroMVtdDqOO/M5bREsgwDJgLPyFk1yT7emd&#43;FO4wiwmn1WeBpOasm2cM787tx98zktEQydAZuAyYBw9UcJXEEsAD4dzVFTdkQ&#43;JPX6vZqjpI4HHgL4ydjdXpQlMp5uKPeonwWAd8GHlFTVJWfAxerGSpiidfq3&#43;S0RGwMAP4O9FBT5Ma9wEg1Q&#43;4MBv4KbKqmyI0xwMGWDNLyoGiOS3BxzuSw8mUEbgO8n5oiV61OkcPKnYNwUWAGaKYlrLMQty8gqsupwI1qBmk1As4ErtNMS1hjWz8L0EugNtyA7naVy1BptaaMwi2/ymkJMxwPPK9mqDmH4ZZhRen8EHhOzVBzDiFwNHktD4qV3AicrGYIykJ0p6sUbgJOUjME5QOgi5yWCMV4XG4rYYO1cVmXhbRqndbUOF2PMhcXm3a4MEw6HWiLL4CuwHtqilWsi1uWklZt8XWttao9reLSCfhYLwGzLAQ2UzMAbhnqPWnVtFZrFmdTTquYdAY&#43;wi1DCbu8Ice1ymG1lRxMM7tWWpXTKh4b4TZRRTwvg84FrfsmaIk0JmbVQqtyWsUbtb6jZoiKVsArBaz3hrjgrSIeWgMz5LREXqylUWvUL/Ai3Ulqg9snEfHRFZcKpnovsnbttFRcEJarCaJmYz9TfqgAdV2m7o6aTbzzelAzLVEuL6gJkuA0YBdpVUTAqcDu1fhi3dNKn2uBIYnX8Wv/s7zBYKx1ovp&#43;AlgPWCytRstSVl/5aJvoBOIxoAPweZ5fqogYafNd4I8J1GMuLibis34k/hIwP&#43;N3dAMG4YKs7oQLDBxrGot3iCAtekaOAW5NoB5veY1OxKVKmQbMy/gdPYGBDbQ6mHjvqC3AnViW0xItspV/YGJkFi753APAo7hI3tWgDbA3LmfQoZE5sf8CzkhEq0OJ96DJbNw&#43;4xhcRuqvqlROe6/VA7xWY3Jio4FT5LRES6yIzN4PcLl67gBeD2TDYOA43N5RDEuLA6nBEeMasIz4lscuBW4DXg1U/g7A0bgg1zFodRtgqpyWaIp7cNlxY2AScCFVOmlUAd8BfhXB7Ksucq3eDRweia3PAxcAE3Ah0KxwpNdqjyJoVU4rPQ70SxXWmYtblnvZuJ17AmOxG0ZoDHBwpFo9GLg/Ajvf8ra&#43;aNzOvf3gz6pWH/LvJzktsRoxLAuOIL5svT8Crjdq287AU9JqVRgJ3BtZu/4Yt&#43;dpkd1wJ2DltAQAk4HtDNs3A7cPEzOvAZsbtCu2ZcJnge0N2zcL6Be5Vl8HeqemVV0uToc9jTuscxJwWAB9gYsN2nVeRG24u3GHdX4CDgtcupBLU9OqZlrpYHmpZThVjkcWgGG4QySW6Ah8Jq1WxK64gxYpsQPwTCpa1UwrDS4wbFv3BB0WuHtF62MrCPG1EbTbRYZt65Wgw8I/f11xOfSscJVmWpplWeMzXBSKTwvQ/q8CWxh68c6TVjOzMdmjrMTIHK&#43;RaLWqmVb8XGPUrn4FcVgr6zrdiC0XG26n3xieYc0viFY3A2YaseVCzbQ0y7LCvsDDBeyLV4AtNWtolLVwQY2tcQDuHp60GobuwLuaaRUHi3tZ&#43;xTUYQH0x8Ye12UG2&#43;ZCgzYdVFCHZUmrV2qmVSzeBzYwZM&#43;/AnepW0zMflsZm4V/iDu4YoWjcHEupdXw1GUVtoiTPY05rKvlsFZhYdnF0l7nwcYc1ig5rFVYuDt5nWZaxWA87k6JBXLPmZMA1wJnxjSCLYhWPwC6SJ6r8WtcZoMotCqnFSfrAosM2VOnLmmU0GF0TiP8ib1uflAjrUqrzXFmqTMuLQ/GyUmGbDlI3dEkRwQu30KA3xMM9cfhkmSTfC9w&#43;aM000obK5vaU3Bp60XT/AUXKTwUgwib/mUhsKGBfkghAG61uQ84LGD5w3BBv&#43;W0EsPS0mAH4HN1SbN0IezR4nmEi4CwoXdaFqinOJfdY323lLTfqOXB&#43;PixETtGyWGVxPvA7wOWHzLzspVl7NFyWCWxGLg1YPklnYbWTCs&#43;lvgZTmi0oV06oaNBXA38NEC5VpaxpdVshLy7dX1LA3PNtOLDgsMapW7IxDLCppU/O1C5FhzW9ZJfZkJmam7x6L1mWnFxIDDGgB0b4pa9RLY2C7m/MxCXObpoWt3Az/hEtoHxkoDlbwe8oJlWGpxrwIa/y2GVReg4b1fVuLwzDLT5o3JYZRE6kWizsTPltOLCQlQBhWoqn6MCll3r&#43;3T7GmjvGyS5shkRsOwDmvufWh6MCwvBLbcAXlNXRNmHOwNPFUSry4HW2E06Ka02zx7A45ppaZZVKWPlsCrmrYBl12rJbkcD7TxGDqtiQiaLPLWp/yGnFQ/fN2DDA&#43;qGivlJwLJrFVbqeGk1CX4asOwmo8hoeTAevsItd4REUQXyIeQMYEvg1SqXsdhrJSQ6NRi/Vhs98aqZVjyEdlhvyWElwZE1GtyEZK4cVhI0GuBYTkuUymNqgtz4R8CyDytA&#43;z4hieVGyEvxB8lpxYuFKNl/Uzfkxp8Clj20yt/fyUD7jpPEcuPPAcseTiMhuOS04mAXAzY8rm7IjfsCl79n4lqdIInlxl8Dl7&#43;bnFacDDVgw5vqhtwIvd&#43;yR5VHx6F5VRLLjcWBy99ZTitOtgtc/nJ1QVJU02kNDly3L9S9SbG3nFacbBW4/JnqgtwJGd9th4Sd1lxJK3dCxs3cRU4rTjYNXP5UdUHuvByw7LWBAdKqKJGQy61tgX5yWiIrr6gJcmd24PK3S7RdZ0laufN64PK3ldMSsb1gUyT0wZZdEm1XLQ/mzzxLWpXTEqXwtpogdxYELn9HaVWUSOhccHvIaYmsKOlj/nwcuPwhibarwjflz0eByx8kpyViE22KLDFgQ7cE23WRpJWkVjvJaYksfKYmyJ2lBmzol2C7fi5p5c4yAzZsLaclsvC1miB3LDx7O0urIhJ2ldMSsb1gU2NtAzbsJK2KEmhvwIZd1MEiC&#43;3UBLljIfvq8ATbta2klaTT2klOS2RhPTVB7nQxYEPXBNu1XtLKnc6W3kFyWiKWF2xqdFMTJPuCTY3uloyR0xJ6wYahlxE7NkmsXTeStHKnpyWtymmJUuitJsgdK8fNt9cLVrRAXyN27CCnJUplCzVB7gwwYsfQxNp1c0krdwYasWO4nFY8hL57spW6IFnyzn8V&#43;tL0QHVp7qxtxI5t5bTiIXSU9aHqgmTZJufve01OS1TzPdTagCFb4W7mb4XbO&#43;nKP4&#43;tfoKLhv06MA14GphRwM56GdhSI61k6GPIlrwPhEwP7Dh05D1fNjVkywYhnFZf4Ejg36h8Tf954E/ArYQPnV9tpgAjA9vQAcUgzIuRCddtMnB4YBs2LMA7oVYcYs2gWiwPDgNuBlbgsopeSj6b0NsBVwELga&#43;A60gzAOjKF0FodtPzmxvfTbhukwzYsLMklq5Wq&#43;m0TgLmeBH/oMr1aA2cDszELU&#43;clJhwnjJgw356fnNju4TrZkGre0pi6Q4AquG0zvUzn5sIc4FygC/7U&#43;DMRITzsQEb9tHzmyzr5vhdFlKDaFUgXbrk6bSO9IK9HBsHPDoC1wKLgQPV1xUzSE2QCz80aFNq9/CGAGtJahVznEGb&#43;uXltF4A7sTmKbN6YAzwUOQCWm7Ahv31HFfMaIM25X2a8QsDddJyduVcbtCm3pU6rV1wByyGRNAB&#43;3tb&#43;0YqoDsN2PA9PcdJkneYrrsM1OkIdWvFdDdoU99KnNYVwBMRdsQs4OAI7b7DgA2H6jmuiOON2pV30NzbDNRppORWEVZPuPYs12ndA5wTcYfcD5wRmc0PGrBhPeDHep7L5ndWXwQ5f98jBupUb3iQEAN/tDrAKsdpTQRGJNApo7CxjBEbe6sJymJDw7Z1T7TNtTJQHusYtm3juvr6TFm/p1KdU2Sf4C4Jrwy2&#43;SzQn38exW0NbEx1UpQ/TYNUzsZ5hbDhnBq&#43;gN/Xs52JB4CDjNr2BvkfxniR/OMalkNXFB0jK3/FYCQMz8IsM62JOTqsubjj6HsBdd459cXFLBuIO2q5Y4N/7&#43;e9/9r&#43;wb8ZF5MwD/4FuCUSMV1nxI5z9Vxn5iDDtlUjM/UNRur2M0kvM4cYtq1rqTOtvDzvbf7Fm1dYoiP9Tx7LlecBv4xAUCuM2NHKkC3WuZnqR4WplLqEtdoWF/BAtMyNwMmmhVqC07qWyiNLjAIuonqRHdYFrgFOqPB7RgD3yWmVxGjgFD3jLdIBWBKBnSk7rVuxeVHWGm0Inw&#43;tpNFycxxTocOahNv/OIvqhiJaDJyIW79&#43;o4LvuRdoZ7zP7jRix8lANz3nLfK7Atfdygm0Y8n/WH&#43;K3BmDkS3NtJb4kWI5nEm4PZiLgF8YG3XmxWBcqhILfEB19kNSoT/x5H&#43;rhuaHAs8Zqd/SCAakIRmACzZunuZmWrdU4LC6E/bQwAXA8Ar&#43;/leG&#43;&#43;xFQ7ZsAPyHnvcmKfqVismGbGmLS4skGufPsRja1ExrI&#43;CdBGYp/XDpSsqhI3aTHt6DrbtyPYC39dyvxhm4vdxo3gUF0eoA3NUREalWm3Jaz/mpfVZ643JopTDtnQZsbbTfdsFeCK06Pfu5DPpS6789gUelVbNsiruCFA2NLQ/2L9NhDTTosMDtKfxLGX83CNjVaL9NwEbU94a8oOd/FTPVBKsYB3xtzKap6pbVBudR0ZjTeriM7zkC2xvOE4Gjy/i7GwzX6Spj9gwB/qJ3AFNxce/EP7nemD2DpNVVA83otLqm09oItz&#43;RhWuBuyOo6&#43;24vFpZxT3MaH0sOtSRxBNdpBqMR8kyG&#43;Mmo1r974JrdUiMhq&#43;5p/UssH2Gv1/gHV1MZL3weC920xxMAHY2aNd/EV8U/Up5ivKWoc28C6r8/ROp7ERvNWeBRctckPU9b3qmlbUi34&#43;wzlkfnBG4m&#43;IWucKoXadj&#43;9pA3kyO3GHVgiuN2nUabrWoKEyN2WGt6bTOzPi3XwBjIx1lZN0o/5HRujxAfoGD8&#43;ZsbC4L5c1rwHbySS1yL/CRUdvOpBjL2i&#43;SwPJ1Q6eVdbSxe8T1PjDj5y1HPf6pYdtOAh5P9AWwFvApsLn8URJaPQG3hJmqVj/HRqqYimm4p5V1ryf2uw5Z62s5qvkyWo4jGVxrCb0Eogl5Y7B/VqgtakpMocQyzbS&#43;k/Hvjk6g7sdm/Pxww3U5LJJBwnEJ6OamBB2WtPpNrR6fQFvfmJrDajjTehzYrWAjkfZkC9P0f7F9uOBDYP0I2n0Kbnl2fmR6sRiFJNbZxbu4jAzWmY5L3jknsr7cEXgS&#43;6svFc20sjisBYnU/XNc6pRS2cN4fbaMpN2H4EIc3Qh0isDeYbjTgSk7rFoTy2GAgbhURzcTRxqevrgQfE&#43;n6rAos2JXJlT/LJeNrR8Tfc8/XLFwMu402W2UFzas2nzXO6tJpH86cHoArY6OqH1&#43;4AfrdxjX6iyj9uW7JFBf3zFrZtW1gS8Tqf9&#43;ZDu2H8Oy6IpI&#43;2I68FvgT7jloxAciEsmuh/lp&#43;WJkcmEifwSq1an4Y7I/5lwy9yH4vaIi6bVGXX19R2zrtWndLJmM7JlOq7HHXO2TGdccsaYmQ3cD9xHdY/MdwEOBg4H9vYDsiLyGC4au7RanlbH4FKw1EKrI71WOxRUq5Pq6us7nuhHuEV0WllHe7HkjfpP3MGRVPgCdyl8PG65bhrweoa/74DbnxiC26TeC5dGxwp/B/YNWP49wLcDlX0FcE5CWl2Ku&#43;/1hNfsS2Q7yNEBd6ViW2An3HkDS3cBHwIOCFj&#43;2Lr6&#43;o5ZU9On5rSynGTahnjSGrwKbIGwzqN&#43;5Dwfl/E7BDcQNurLa&#43;iSdgyM9Q4r5EnlW1v5aWepLEywIxZl&#43;GyniOrVT89YFOztf38Y0IbQqwcaXMXByhnWxwFteLMV2YLBfpJgR2Q5VBLbnse&#43;es5Ms72RZyt05toV0qp5GmaTWBJSq1lDE7VJsDPWyvDZpZHV7WFglJ43k/wCd6dmJSGz&#43;75hRKujJQuTXIxLvbOSkHfAZrci2/LYxgl2SMcMn/00wvqdhds8FXaYBFxiyJ43jNhxCvAPycMUk4ELDNnzWitcdIJSaZ1gp2TZ04v1eO6BwPN6/sywgzF7LIXU&#43;hbudKgIz3LsZW5/sxXZjg6nRmey3Xf4NOK6DjU0oi4yTZ2&#43;baWmWcXWwDw1Q3DWsmhUK1wA06LSN&#43;PnY78I2Yc0T4DGQnNH2tuqeVajFy7ckwiD2YDGrcoY0eydUMdsm3GqvCKBOnfDbgbZlNmS5sNTtVETNfrilFZrT&#43;8WBgxBtVrOksTZCXVOlmO2kxOqd2e0VFhLBuAuezdH&#43;0C2fSatijUGV3Na&#43;Ew7C04rS7qRAxLqoEMzfHZCYuLsAzyjZ7QmDuuVEj4Xymm9LK0KzxYlDK4g3H3VaQ2d1i1liCh2diTbacgUj&#43;LuCPw/PatVo1eJDiuk03opIq3eK0lVjR64cFqlsE4gG6c0dFpXZfzj3yTQSWdk/PykRMX6HeBCPbO5swHZ9ovXC2Tn1IjadCTuoqvIX6tZQnmFijD/Irh8Wiv/Q9ZDBjEHzq3DHawolZlA/8SFuzsuRYWojLm4lDdZaEO4aCu7EV9W5j1xgYZFZbwF9KzyuzNP9gLGNTyI8b8Zv&#43;DGiDvr6oyfv6cAAn4cd&#43;x6ip7linS1WRl/F/J48dQI23kcLrfddEmubK4vw2FBuEwE4Fe7Gs602uHyFmUhxizG5YwUSt1MT4Vzgcv1XGfiALJlwW7IMMItP8eeauinZN/eKDoHAQ&#43;W&#43;bdDWT1mZs212nCmVY7z&#43;WOEHZZ1KWRmwRwWuMR8PYCn9Xy3yFjcftTYCr6jh5qxbH7l2&#43;9JNUWL/MNr9cEKvqNn6EqseU/r6Ix/PxIX1y4W9mP1EPulcG1BBf42LnPqXti/yxOKw/0Ma3GF3xPqRTAvIa3uAuxD2LQZlhmJi&#43;tYqVZ7BbJ/YVNO6/YyvuwvkXRa&#43;zJHwzcVXOzjcJHwz9Rzv4rRuKWKvLQfymk9l1i/PII7jn26JLqKm71W87ousFmgejzTlNMCOCfjl60NTIyg88qZLVwoza/iOi/&#43;ywrcBjNxS1Gn5Py9vQPVJ9VrHL/2Wi3y8fhZwKbADxPR6sTmnNZ/lvGFw4G7DHdguTEDL5Kv&#43;gbn&#43;xfC&#43;QWq80e4wzj9qU5q&#43;lAvgtT3LC8ooFYXAQOBfsCbVfj&#43;UMuDTzbntCjTOx8B/MFgJ35V5t8dK//ULJf5F8K/JlzHp4H1cfHvqnkYJ1SEmdcKptUjEq7jM16rnYAZVSwn1ADr5Zac1s2UdwfiWOA&#43;Qx35MeUlrlwE/I/8Uknc5V8IG1Denqg1ljeYTe7kNVRNuviXTQjeLphW7/b9umFCWv2Fr9OONdDqhoSL3PJ&#43;S04LYESZX36YgRFcH9wR/nIbuJt8UWY&#43;xJ0&#43;rQO2B24jnlOHnwCjcEsfa1HbfbtQs6zZBdbq&#43;wlotbfX6iU1LHuLQHWe2/BfmnNar1L&#43;pb3NcftIJwao4DH&#43;gSw3qd4RxHdh2hrP&#43;X7oCGwMnAaMwU4Cyo9wJ0lPxUWjWBc4izBHwEOFB1PU9G9qtYfXxP1ky3xRba0&#43;0YhW5wSwZWCgNljtDl7DiBhNMR7YtYICx/uXVrXDxeyEi1Y/oILvmIZL9S2qRxfcrfptga1w&#43;Xv6Ur0lsrm4Nf4XcTnRnsHW/aTrCHNE&#43;3TcKTvRNJ0baHWQf2n3qYFWpzbQ6hxD7fFr/y6vNafSIGxgKU4L3IW9SiP7TgHOo7Lb2I2xHy6Cw5AKv2cBsJGe02Cs62dlXfxPV/&#43;7k//p6GfPK7OmLsMFmV2CuzD5vp/JLfT//A5uz&#43;Yr4/V&#43;FrdEVWtiDJRrSavdcdsIGzTQa2dcTMQOuKtAbXCrWV/jVm9WavUDXGbghf69swCYj/0Vnom4k&#43;K1Zrh/TjI5rY38SyAPPsNFmbiO5lM6N8dmuKXLkZSXfXlNlvoX4&#43;d6HkWNWRGo3A1w&#43;5BCWNfq&#43;jQ4ZFKq0wK37FaNqMqTcWvIE3AJ6dZ0ZN389Hw34BA/Tc&#43;bjf1IR4haUq1nqiXeII1ErqJ27EiYe33f0GqW4&#43;AzcCdW3sjZqKH&#43;JxTdgXelSRGAIYHKnaSmFxnZPFC53zgwlPUO0xzcem0qAVTrpEURkEMDlTtBTS8ysn&#43;gcsd/46WdYXlwTfI4nBGKz3Ab&#43;0KEJNQewRB86nIhSuQrygvUkLtWKznE0BH4e4SNP1cOSxigU6Byl8phiYz0DOSwvmhMq5WevNuPuIJRHkW40PpCNOSAQOVOVtOLjOwUqNxGB1d5HBe/DHdH4VHDjX4PbinzDulPGOGMQOU&#43;pKYXGTk5ULmPNfYfK9nTaozdcUkTtzTS2M/jkhfqEqWwRqj9rG2ofnQaIa3mwRCqsDy4Jo/jYqntiguJFIqncWnih8phCYMMDli2HJbIwlYBy67a8mBjTMDF8NsYF0G5VozG3bvaCZcmXgiL/CpQuY&#43;p6UVGLg9UbpPbTa2qXPB8XATlOlywyTFVKOPPuMgCdbg06LooLKyzT6Byb1HTi4wcEqjcJic7ee9pZeFQ4N&#43;Agyj9CPpHwF99hR6RnkSE7EojFyZrhC7TiywMI1z0lDqLTkuIIjIft4RdaxYR7m6YiJPXCBO&#43;qVmttlK/CFFTugcq92I1vchIqHiDVzT3P&#43;W0hKgd1xS0bBEflwQsu1mnpeVBIWrHioBlaz9LJKHV1uqbKNmswT8vbzBjXl7C7LmUzzT3vXPU/GXx7YBln2xAq1l1WolekVYr4sCAZZ/VokfTTCtKvsSlng/BbbhrDCIb7&#43;LCnRVtlvUp4QJU/xF3Qllk431cZmuTWpXT0tQ9tpdgjOxAI8nsasQsoJ&#43;0KkpkW1z4uxC8A2zS0od0ECNOZhkQtiid3wYs&#43;6jAdZ8RuPw&#43;kl8mbg9Y9pGlfEhOK06eClz&#43;LuqCkhmMC1IbimcD139i4PIPkARLZmtc5KJQlJRRW04rTsYHLv&#43;76oKS&#43;U3Asm8wUP8Jgcs/VhIsmZsCll3yaoT2tOKkDzA7sA3aK2iZocBzBe&#43;jrYGXpFXzhAzZlKmPNNOKk7cN2PAtdUOLXBuw7GlG2mC2ARv2kxRbZFTAsjPt0ctpxcmXwILANlykbmiWvXHBcUNxjpF2&#43;Ax4K7ANv5QcW3TqOwcs//RMUzItD0bLHcD3AtugZZem&#43;Ypwl/e/BtpIq9JqiSwLPIHJ1DeaacWLhdQs56kbGuVcwkab&#43;Zmx9njcgA2XSJZNPsMh/UDmFQHNtOKlP&#43;HvwGgE&#43;026AO8FtqEeF4nCChYOY0iriWhVM614eQX4xIAdCpOzOs8FLv9WYw4LYKoRrZ4oea7G&#43;Bi1KqcVN48asOF2dcMqfg70CmzDFUbbZoIBG34ria7iXGBAYBvKOiCzVrt2bdV98dIBOMyAHV8DTxS8L/oA9wW24QngKqPt0xE4xIAdbYwM9kLSDRhrYMBd1pUQ7WnFzSaEP068SksF74sVBmzYDnjB8ItygbQqrXqGAZPL&#43;UMtD8bN29g4jAE2TjOGYroBG6YYdljgUrPMNmLLuAJr9WUDNkwq12GBlgdToCuwuwE7egNvGn9xVoPbcBeJQ7M78IHxttrAiFY3A&#43;ZX8uKMlP8B9jFgx35UcGpRy4Px0xOYZ8ie7n5UXQQuxcZdtSeJI/K&#43;pSVCgI298yoCv8TG/b2KtSqnlQav&#43;5mOBabh7uWkzr8DVxqxpRU29ilKYS6wqRFbpgNbFUCr5wKXG7GlIy60V0ViF/FztSFbBhH&#43;FF21OdOQwxodkcMCW0fyBxZAqz8x5LB&#43;X6nD0kwrLay9uG4Hjk6wnf8DuMyQPXXSqrRaJK1qppUO/2vMnqOAuxNr42uNvQT2j7Qd7zGo1b8kptVrjGl1RG6eTzOtZFgXWGTQrinAtgm073jCphpZkxmETY1eCWvhLqRb4yVgcAJafRzYzZA9c3EnNuW0xDeYQ/gwQlVdGghk93K1Z&#43;68Cmxh1La2uNQyMbIida1qeTAtdjP&#43;MJ0SWXueYtRhnZ&#43;AVnc2bNtS4MeRtedJRh3WL3L3gJppJcfbuPsnVpmNi5f4smEb&#43;&#43;L2CC0uv&#43;W61BKY6YQP2tpSWx&#43;Ci1JvlT5eq4MM2vYOLtRcrmimlR5DjNu3Oe4u1z3YuyPTDbgFmIXd/aL9E9Lq7sbt64Xb57Kq1Zv9IHBQkfpXTis93gP&#43;EYGdI7zzGgccGtiWrXEhbhYAJxhus9NwedRS0uoYaTUTg4H/9lr9geE2OxV4rRpfrOXBNGlPDpf4aswS3DLHHcCDNSivC3Akbi9gmwja52lgpwS12sH3fWxavR&#43;XxHBsjbT6HeDkSLT6KFWMxymnlS4XUYVN0Boy3c8YH8EdN/84h&#43;/8FnAwbp&#43;id2TtsR6wOFGt/hy4OGL7p/kX9SO4ZJcf5vCde/tZ3UG4JfWYqKeK2bPltNLmU1ysr5SYiTsu/QYu2OmHuFTuS3HL3e39yLQH0B&#43;3nLJx5HXei/TTaXzsHXOKWp2NCyLdmFa74g4rbIlbpu4hrcppFZlhuNw1Il5&#43;hq14fdViJ1wEcCGtNovyaaXNO7iTRQPVFFFyP/CjgtT1TVzklP7q9ih5iBrdw9RMqxgsxq0zi3hYBHQqYL1TXNJOnSXAOrUqTEfei8GeaoLo6FTQeu&#43;uro&#43;OdWpZmJYHi8F84EtspNoWLdOauHJk5a3VJcC&#43;kkEUtKXGoc7ktIrDBNxm9&#43;ZqCtNsAXxQ8DZ4CtgRF05L2KU3&#43;Rzvz4SWB4vFfriwNMImw6hSFIEIOQB3/0nYZDtcVomaI6dVPAYDb6kZzDEcmKxmWI2tgXlqBpNafSFU4XJaxaQnLnaZsDPDelbN0Ci9NMgyN8MKqlU5reKykV4GJuitGVZJg6y5aobgbB5yhrUS3dMSr&#43;BCyIgAz5&#43;aQFqNhNbAMguGaKYl&#43;qNQT7VmthxW2VrVrDSMVpdZMUhOSwDsgEt7IKrP79BR7koYBtymZiiuVuW0xEpuwnYCxBQ4GjhRzVAxx0irxdWq9rTEmvTBRdvurqbIjZm4/Ehvqyly1&#43;pEYEM1RW7MxqUXMXvVQDMtsSav404WXq&#43;myIWrcHsxcljV0WpXYJSaIjet9sX43TjNtERzbA3ciVKblMN04Pvo/lWt2MprdZCaIjMzgOP9rNU8mmmJ5pjqXwYj1BSZOMu3mxxW7XjZD7Kk1Wyc7QelE2MxWDMtkYWfAFerGZpkPVzuMiGtWuf3fnYVHZppiSxcg7uzcb6aYjWe9O0ih2VPq&#43;epKVbjad8ux8daAc20RCWcCPy2wPWfhluSEtKqdWbglqyjz9OmmZaohFv8qG2IfyiKwhhfbzms&#43;LS6De6QTFEY6&#43;s9kEQSi8ppiTx40T8UdcDpwHuJ1vNsX8eD1eXRsvJwUR1wWsJaPcfX8YDUKqblQVFNjgeOA3aN1P4v/Aj9KpTXKXWO83qNXatXEyg5o5yWSI0BuMzJewHbAj0M2vgJbqP6QeAe4E11WyHpD&#43;wP7OG1uqlRrT4DPFA0rcppiVCsg9tfGIRbrumPy9fTm9osW7&#43;Hu9szBXgOF&#43;n&#43;VXWLaIQOuH3bQbh9zH7AFl6r1FCrL3mdPltkrcppCYt0w4Xn6dLgd3f/uxNQ73/a&#43;Z/W3tEtB74GPgcWAR8DC4F3cUkE38FlbH4bHU8X&#43;Wt1pV5XanVdYH2gI9AeaNNAqwBLgSV&#43;1rRSq/NxyVnne71Kq2vw/wG/BEKEk9UAGwAAAABJRU5ErkJggg==">
+  <span class="etiqueta">Trabaja con nosotros</span>
+  <div class="espacio"></div>
+  <ol class="pasos" id="pasos">
+    <li data-p="1" class="activo"><b><span>1</span></b>Tus datos</li>
+    <li data-p="2"><b><span>2</span></b>Entrevista</li>
+    <li data-p="3"><b><span>3</span></b>Listo</li>
+  </ol>
+</header>
+
+<main>
+  <div class="hero" id="hero">
+    <h1>Postula a nuestras <span>vacantes</span></h1>
+    <p id="subHero">Completa tus datos, adjunta tu hoja de vida y luego conversa unos minutos con Sofía, nuestra entrevistadora virtual.</p>
+  </div>
+
+  
+  <section class="tarjeta centro" id="sCargando"><div class="giro"></div><p style="margin-top:14px">Cargando vacantes…</p></section>
+
+  
+  <section class="tarjeta centro oculto" id="sMensaje">
+    <h2 id="msjTitulo">Sin vacantes abiertas</h2>
+    <p id="msjTexto"></p>
+    <div style="margin-top:18px" id="msjAccion"></div>
+  </section>
+
+  
+  <section class="tarjeta oculto" id="sLista">
+    <h2 style="font-size:22px;margin-bottom:4px">Vacantes abiertas</h2>
+    <p class="tenue" style="font-family:var(--f-comp);margin:0 0 16px">Elige la vacante a la que deseas postular.</p>
+    <div id="listaVac"></div>
+  </section>
+
+  
+  <section class="oculto" id="sFormulario">
+    <article class="tarjeta vac-sel" id="vacSel"></article>
+
+    
+    <article class="tarjeta antes" id="antes">
+      <span class="etiqueta amarilla">Antes de empezar</span>
+      <h2>Ten esto listo para postular</h2>
+      <p class="intro">Todo el proceso toma unos <b>15 minutos</b> y se hace de una sola vez, en 3 pasos: tus datos, una entrevista virtual con Sofía y listo.</p>
+      <ul class="requisitos">
+        <li><span class="ico-r">📄</span><div><b>Tu hoja de vida</b><span>En PDF o como foto (PNG o JPG), máximo 10 MB. Si postulas desde el celular, tenla guardada en el teléfono o en Drive.</span></div><em class="obl">Obligatorio</em></li>
+        <li><span class="ico-r">🎨</span><div><b>Tu portafolio</b><span>Si tienes: un archivo PDF o imagen, o el enlace a tu Behance, web o Drive.</span></div><em>Opcional</em></li>
+        <li><span class="ico-r">🪪</span><div><b>Tus datos</b><span>Cédula o pasaporte, correo, celular y ciudad donde vives.</span></div><em class="obl">Obligatorio</em></li>
+        <li><span class="ico-r">💵</span><div><b>Tu aspiración salarial</b><span>Un rango mensual en dólares: mínimo y máximo.</span></div><em class="obl">Obligatorio</em></li>
+        <li><span class="ico-r">🔗</span><div><b>Tu perfil de LinkedIn</b><span>El enlace, si tienes uno.</span></div><em>Opcional</em></li>
+        <li><span class="ico-r">🎙️</span><div><b>Un lugar tranquilo para la entrevista</b><span>Unos 10 minutos con buena conexión. Puedes responder hablando (con micrófono) o escribiendo.</span></div><em class="obl">Necesario</em></li>
+      </ul>
+      <p class="nota-antes">No cierres la página durante el proceso. Si se interrumpe, vuelve a este mismo enlace con tu correo y continúas donde te quedaste.</p>
+      <button type="button" class="btn primario" id="btnListo">Tengo todo listo, empezar →</button>
+    </article>
+
+    <form class="tarjeta oculto" id="form" novalidate>
+      <h3 class="seccion-t"><span class="n">1</span>Tus datos</h3>
+      <div class="rejilla">
+        <label class="campo">Nombres *<input id="nombres" autocomplete="given-name"></label>
+        <label class="campo">Apellidos *<input id="apellidos" autocomplete="family-name"></label>
+        <label class="campo">Cédula o pasaporte *<input id="identificacion" maxlength="20"></label>
+        <label class="campo">Correo electrónico *<input id="email" type="email" inputmode="email" autocomplete="email"></label>
+        <label class="campo">Teléfono celular *<input id="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="09…"></label>
+        <div class="campo">Ciudad de residencia *
+          <div class="combo" id="comboCiudad">
+            <input id="ciudad" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="listaCiudades"
+                   autocomplete="off" placeholder="Escribe las primeras letras…">
+            <ul class="combo-lista oculto" id="listaCiudades" role="listbox"></ul>
+          </div>
+          <input id="ciudadOtra" class="oculto" placeholder="Escribe tu ciudad" maxlength="60" style="margin-top:8px">
+        </div>
+      </div>
+
+      <h3 class="seccion-t"><span class="n">2</span>Perfil</h3>
+      <div class="rejilla">
+        <div class="campo">Aspiración salarial mensual *
+          <div class="rango">
+            <span class="moneda">USD</span>
+            <input id="aspiracion" type="number" inputmode="numeric" min="0" step="1" placeholder="Ej. 900" aria-label="Aspiración salarial mensual en USD">
+          </div>
+        </div>
+        <label class="campo">Disponibilidad para empezar
+          <select id="disponibilidad"><option value="">Selecciona…</option><option>Inmediata</option><option>15 días</option><option>30 días</option><option>Más de 30 días</option></select>
+        </label>
+        <label class="campo completo">Perfil de LinkedIn <span class="ayuda">Opcional</span><input id="linkedin" type="url" inputmode="url" placeholder="https://www.linkedin.com/in/…"></label>
+      </div>
+
+      <h3 class="seccion-t"><span class="n">3</span>Documentos</h3>
+      <div class="rejilla">
+        <div class="campo">Hoja de vida *
+          <label class="soltar" id="zonaCv">
+            <input type="file" id="cv" accept="application/pdf,image/png,image/jpeg,image/webp">
+            <span class="ico">↑</span><span class="txt">Arrastra tu archivo o toca para buscarlo</span>
+            <span class="ayuda">PDF o imagen · máx. 10 MB</span>
+          </label>
+        </div>
+        <div class="campo">Portafolio <span class="ayuda">Opcional</span>
+          <label class="soltar" id="zonaPort">
+            <input type="file" id="portafolio" accept="application/pdf,image/png,image/jpeg,image/webp">
+            <span class="ico">↑</span><span class="txt">Arrastra tu archivo o toca para buscarlo</span>
+            <span class="ayuda">PDF o imagen · máx. 10 MB</span>
+          </label>
+        </div>
+        <label class="campo completo">Enlace a portafolio en línea <span class="ayuda">Opcional · Behance, web personal, Drive…</span>
+          <input id="linkPortafolio" type="url" inputmode="url" placeholder="https://">
+        </label>
+      </div>
+
+      <h3 class="seccion-t"><span class="n">4</span>Autorización</h3>
+      <label class="check">
+        <input type="checkbox" id="consentimiento">
+        <span>Autorizo a PUNTO 99 a tratar mis datos personales, los documentos que adjunto y mi entrevista virtual —incluido su análisis con herramientas de inteligencia artificial— con la finalidad de participar en este y en futuros procesos de selección (mis datos podrán conservarse en el banco de talento), conforme a la Ley Orgánica de Protección de Datos Personales. La decisión final la toma una persona del equipo de Talento Humano.</span>
+      </label>
+
+      <div id="errForm" class="alerta error oculto" role="alert" style="margin-top:16px"></div>
+      <div class="enviar">
+        <button class="btn primario" id="btnEnviar">Continuar a la entrevista →</button>
+      </div>
+    </form>
+  </section>
+
+  
+  <section class="oculto" id="sEntrevista">
+    <div class="sala">
+      <div class="escenario">
+        <div class="avatar-wrap" id="avatarWrap">
+          <img id="avatarFoto" class="oculto" alt="Sofía">
+          <svg id="avatar" viewBox="0 0 240 260" aria-label="Avatar de la entrevistadora">
+            <defs>
+              <linearGradient id="gFondo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eceefb"/><stop offset="1" stop-color="#eff7d8"/></linearGradient>
+              <radialGradient id="gPiel" cx="50%" cy="42%" r="62%"><stop offset="0" stop-color="#f6cdae"/><stop offset=".75" stop-color="#eab695"/><stop offset="1" stop-color="#dca283"/></radialGradient>
+              <linearGradient id="gPelo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3328"/><stop offset="1" stop-color="#22160f"/></linearGradient>
+              <linearGradient id="gSaco" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4347cc"/><stop offset="1" stop-color="#2f32a8"/></linearGradient>
+              <clipPath id="recorte"><circle cx="120" cy="130" r="118"/></clipPath>
+            </defs>
+            <circle cx="120" cy="130" r="118" fill="url(#gFondo)"/>
+            <g clip-path="url(#recorte)">
+              <g id="cuerpo">
+                <path d="M30 262 C36 214 68 196 104 190 L120 208 L136 190 C172 196 204 214 210 262 Z" fill="url(#gSaco)"/>
+                <path d="M104 190 L120 224 L136 190 Z" fill="#c2e070"/>
+                <path d="M104 190 L115 232 L99 238 L88 202 Z" fill="#2c2f9e"/>
+                <path d="M136 190 L125 232 L141 238 L152 202 Z" fill="#2c2f9e"/>
+                <circle cx="156" cy="226" r="3.2" fill="none" stroke="#fff" stroke-width="1.4"/>
+                <text x="161" y="231" font-family="Helvetica Neue, Helvetica, Arial" font-weight="700" font-size="12" fill="#fff" letter-spacing="-.6">99</text>
+              </g>
+              <g id="cabeza">
+                <path d="M70 112 C60 58 92 32 122 34 C158 36 184 64 172 118 C176 152 182 180 176 204 L150 198 C158 170 160 140 158 112 L82 112 C80 140 82 170 90 198 L64 204 C58 178 64 150 70 112 Z" fill="url(#gPelo)"/>
+                <path d="M106 158 L106 188 Q120 197 134 188 L134 158 Z" fill="#d9a07f"/>
+                <path d="M106 170 Q120 180 134 170 L134 160 L106 160 Z" fill="#c98e70" opacity=".45"/>
+                <ellipse cx="79" cy="114" rx="6" ry="10" fill="#e3aa8a"/><ellipse cx="161" cy="114" rx="6" ry="10" fill="#e3aa8a"/>
+                <circle cx="79" cy="127" r="3.2" fill="#c2e070"/><circle cx="161" cy="127" r="3.2" fill="#c2e070"/>
+                <path d="M78 104 C78 70 98 54 120 54 C142 54 162 70 162 104 C162 136 148 166 120 172 C92 166 78 136 78 104 Z" fill="url(#gPiel)"/>
+                <path d="M77 104 C74 68 96 48 124 50 C152 52 168 74 163 102 C152 82 134 72 110 75 C96 78 86 88 77 104 Z" fill="url(#gPelo)"/>
+                <path d="M124 51 C140 56 150 68 152 84 C144 72 134 64 122 62 Z" fill="#5b4033" opacity=".55"/>
+                <g id="cejas">
+                  <path d="M91 99 Q101 94 111 98" stroke="#3a281f" stroke-width="3" fill="none" stroke-linecap="round"/>
+                  <path d="M129 98 Q139 94 149 99" stroke="#3a281f" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </g>
+                <g id="ojos">
+                  <ellipse cx="101" cy="112" rx="8" ry="5.4" fill="#fff"/><ellipse cx="139" cy="112" rx="8" ry="5.4" fill="#fff"/>
+                  <g id="iris">
+                    <circle cx="101" cy="112" r="4.4" fill="#6b4630"/><circle cx="101" cy="112" r="2.2" fill="#1c1c1a"/><circle cx="102.6" cy="110.4" r="1.2" fill="#fff"/>
+                    <circle cx="139" cy="112" r="4.4" fill="#6b4630"/><circle cx="139" cy="112" r="2.2" fill="#1c1c1a"/><circle cx="140.6" cy="110.4" r="1.2" fill="#fff"/>
+                  </g>
+                  <path d="M92 110 Q101 104.5 110 110" stroke="#2b1d16" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+                  <path d="M130 110 Q139 104.5 148 110" stroke="#2b1d16" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+                </g>
+                <path d="M120 116 Q116 129 119 132.5 Q122 134 125.5 131.5" stroke="#c98e70" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                <ellipse cx="93" cy="133" rx="9" ry="5" fill="#e8907f" opacity=".32"/><ellipse cx="147" cy="133" rx="9" ry="5" fill="#e8907f" opacity=".32"/>
+                <g id="boca">
+                  <ellipse id="bocaInt" cx="120" cy="147.5" rx="11" ry="1.2" fill="#5e2424"/>
+                  <rect id="dientes" x="111.5" y="145" width="17" height="3.2" rx="1.6" fill="#fff" opacity="0"/>
+                  <path id="labioSup" d="M106 146.5 Q113 141.8 120 143.8 Q127 141.8 134 146.5 Q127 147.8 120 147.4 Q113 147.8 106 146.5 Z" fill="#b5585b"/>
+                  <path id="labioInf" d="M106.5 147 Q120 149.4 133.5 147 Q128 154.5 120 155 Q112 154.5 106.5 147 Z" fill="#c46668"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+          <div class="estado-avatar" id="estadoAvatar">Lista para comenzar</div>
+        </div>
+        <div class="subtitulo" id="subtitulo" aria-live="polite"></div>
+        <div class="progreso"><div id="barraProgreso"></div></div>
+      </div>
+
+      <aside class="panel-chat">
+        <div class="chat-cab">
+          <div><strong>Sofía</strong> · Entrevista virtual<div class="tenue" id="cargoEntrevista"></div></div>
+          <button class="btn mini" id="btnVoz" title="Activar o silenciar la voz">🔊 Voz</button>
+        </div>
+        <div class="chat" id="chat"></div>
+        <div class="inicio" id="inicioEntrevista">
+          Son 5 preguntas. Después de cada una tendrás <b>5 segundos</b> para prepararte y hasta <b>1 minuto</b> para responder <b>hablando</b>.
+          Si no puedes hablar, también puedes <b>escribir</b> tu respuesta. Busca un lugar tranquilo y permite el uso del micrófono.
+          <button class="btn primario" id="btnComenzar">Comenzar entrevista</button>
+        </div>
+        <div class="entrada oculto" id="entrada">
+          <div class="turno-msg" id="turnoMsg">Escucha la pregunta…</div>
+
+          
+          <div class="voz-panel oculto" id="vozPanel">
+            <div class="reloj" id="reloj">
+              <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="pista" cx="60" cy="60" r="52"/><circle class="avance" id="relojAvance" cx="60" cy="60" r="52"/></svg>
+              <div class="reloj-c"><b id="relojNum">5</b><span id="relojTxt">Prepárate</span></div>
+            </div>
+            <div class="vivo-col">
+              <div class="nivel oculto" id="nivelMic"><i id="nivelBarra"></i></div>
+              <div class="vivo" id="textoVivo" aria-live="polite"></div>
+              <div class="acciones-chat">
+                <button class="btn primario" id="btnEmpezarYa">🎤 Empezar ya</button>
+                <button class="btn mic grabando oculto" id="btnParar">⏹ Terminar respuesta</button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="escrito-panel oculto" id="escritoPanel">
+            <div class="fila-escrito"><span class="tenue chico" id="ayudaEscrito"></span><span class="reloj-mini oculto" id="relojEscrito"></span></div>
+            <textarea id="respuesta" rows="4" placeholder="Escribe tu respuesta…"></textarea>
+            <div class="acciones-chat">
+              <button class="btn oculto" id="btnRegrabar">🔁 Grabar de nuevo</button>
+              <button class="btn primario" id="btnResponder">Enviar respuesta</button>
+            </div>
+          </div>
+          <div class="pie-entrada">
+            <button class="enlace-modo oculto" id="btnModo">✍️ Prefiero escribir mi respuesta</button>
+            <button class="terminar" id="btnTerminar">Terminar entrevista</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  
+  <section class="tarjeta centro oculto" id="sFin">
+    <div class="fin-icono">✓</div>
+    <h2 id="finTitulo">¡Gracias por tu tiempo!</h2>
+    <p id="finTexto">Recibimos tu postulación y tu entrevista. Nuestro equipo de Talento Humano revisará tu perfil y te contactará por correo electrónico.</p>
+  </section>
+</main>
+
+
+<div class="procesando oculto" id="vProcesando" role="alertdialog" aria-live="assertive" aria-modal="true">
+  <div class="proc-caja" id="procCaja">
+    <div class="proc-icono"><div class="anillo"></div><div class="centro" id="procIcono">99</div></div>
+    <h3 id="procTitulo">Procesando<span class="puntos"></span></h3>
+    <p id="procTexto"></p>
+    <div class="acciones oculto" id="procAcciones"><button type="button" class="btn primario" id="procCerrar">Entendido</button></div>
+  </div>
+</div>
+
+<script>
+  const PARAMS_URL = new URLSearchParams(location.search);       
+  const PROCESO_INICIAL = '' || PARAMS_URL.get('proceso') || '';
+  const TOKEN_INICIAL = '' || PARAMS_URL.get('t') || '';
+  const MAX_MB = Number('10');
+  const AVATAR_FOTO = '';
+  const TIEMPOS = JSON.parse('{\x22prep\x22:5,\x22voz\x22:60,\x22escrita\x22:120,\x22stt\x22:\x22auto\x22}');
+</script>
+<script>
+
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let TOKEN = TOKEN_INICIAL || '';
+let vacantes = [], vacante = null, enlaceFijo = false;
+let ocupado = false, terminada = false, vozActiva = true;
+
+function srv(fn, ...args) {
+  return new Promise((ok, err) => google.script.run.withSuccessHandler(ok)
+    .withFailureHandler(e => err(new Error(((e && e.message) || String(e)).replace(/^Exception:\s*/, ''))))[fn](...args));
+}
+const espera = ms => new Promise(r => setTimeout(r, ms));
+
+function seccion(id, paso) {
+  ['sCargando', 'sMensaje', 'sLista', 'sFormulario', 'sEntrevista', 'sFin'].forEach(s => $(s).classList.toggle('oculto', s !== id));
+  $('hero').classList.toggle('oculto', id === 'sEntrevista' || id === 'sFin');
+  if (paso) document.querySelectorAll('#pasos li').forEach(li => {
+    const n = Number(li.dataset.p);
+    li.classList.toggle('activo', n === paso);
+    li.classList.toggle('hecho', n < paso);
+  });
+  window.scrollTo(0, 0);
+}
+function error(msg) {
+  $('errForm').textContent = msg || '';
+  $('errForm').classList.toggle('oculto', !msg);
+  if (msg) $('errForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+ 
+function ventana(estado, titulo, texto) {
+  const caja = $('procCaja');
+  caja.classList.remove('ok', 'error');
+  if (estado) caja.classList.add(estado);
+  $('procIcono').textContent = estado === 'ok' ? '✓' : estado === 'error' ? '✕' : '99';
+  $('procTitulo').innerHTML = esc(titulo) + (estado ? '' : '<span class="puntos"></span>');
+  $('procTexto').textContent = texto || '';
+  $('procAcciones').classList.add('oculto');
+  $('vProcesando').classList.remove('oculto');
+}
+const cerrarVentana = () => $('vProcesando').classList.add('oculto');
+function esperarCierre() {
+  $('procAcciones').classList.remove('oculto');
+  $('procCerrar').focus();
+  return new Promise(r => { $('procCerrar').onclick = () => { cerrarVentana(); r(); }; });
+}
+
+ 
+document.addEventListener('pointerdown', e => {
+  const b = e.target.closest('.btn');
+  if (!b || b.disabled) return;
+  const r = b.getBoundingClientRect(), d = Math.max(r.width, r.height);
+  const o = document.createElement('span');
+  o.className = 'onda';
+  o.style.cssText = 'width:' + d + 'px;height:' + d + 'px;left:' + (e.clientX - r.left - d / 2) + 'px;top:' + (e.clientY - r.top - d / 2) + 'px';
+  b.appendChild(o);
+  setTimeout(() => o.remove(), 600);
+});
+
+ 
+
+async function iniciar() {
+  if (TOKEN) return abrirSala().catch(e => mensaje('No pudimos abrir tu entrevista', e.message, true));
+  try {
+    const r = await srv('portalVacantes', PROCESO_INICIAL || '');
+    vacantes = r.vacantes; enlaceFijo = !!r.fija;
+    if (r.error) return mensaje('Vacante no disponible', r.error, true);
+    if (!vacantes.length) return mensaje('Sin vacantes abiertas', 'En este momento no tenemos procesos abiertos. Vuelve a visitarnos pronto.');
+    if (enlaceFijo || vacantes.length === 1) return elegir(vacantes[0].id);
+    pintarLista();
+  } catch (e) { mensaje('No pudimos cargar las vacantes', e.message + ' Intenta recargar la página.'); }
+}
+function mensaje(titulo, texto, verOtras) {
+  $('msjTitulo').textContent = titulo;
+  $('msjTexto').textContent = texto;
+  $('msjAccion').innerHTML = verOtras ? '<button class="btn" id="btnOtras">Ver vacantes abiertas</button>' : '';
+  if (verOtras) $('btnOtras').addEventListener('click', async () => {
+    seccion('sCargando', 1); TOKEN = '';
+    const r = await srv('portalVacantes', '');
+    vacantes = r.vacantes; enlaceFijo = false;
+    vacantes.length ? pintarLista() : mensaje('Sin vacantes abiertas', 'En este momento no tenemos procesos abiertos. Vuelve a visitarnos pronto.');
+  });
+  seccion('sMensaje', 1);
+}
+function pintarLista() {
+  $('listaVac').innerHTML = vacantes.map((v, i) =>
+    '<div class="vac" style="--i:' + i + '"><div class="info"><div class="titulo">' + esc(v.cargo) + '</div>' +
+    (v.resumen ? '<div class="resumen">' + esc(v.resumen) + '</div>' : '') +
+    '</div><button class="btn primario" data-id="' + esc(v.id) + '">Postular</button></div>').join('');
+  document.querySelectorAll('#listaVac [data-id]').forEach(b => b.addEventListener('click', () => elegir(b.dataset.id)));
+  seccion('sLista', 1);
+}
+function elegir(id) {
+  vacante = vacantes.find(v => v.id === id);
+  $('vacSel').innerHTML =
+    '<span class="etiqueta">Estás postulando a</span>' +
+    '<h2>' + esc(vacante.cargo) + '</h2>' +
+    (vacante.resumen ? '<p>' + esc(vacante.resumen) + '</p>' : '') +
+    (!enlaceFijo && vacantes.length > 1 ? '<button type="button" class="btn mini" id="btnCambiar">← Elegir otra vacante</button>' : '');
+  if ($('btnCambiar')) $('btnCambiar').addEventListener('click', pintarLista);
+  error('');
+  $('antes').classList.remove('oculto');
+  $('form').classList.add('oculto');
+  seccion('sFormulario', 1);
+}
+$('btnListo').addEventListener('click', () => {
+  $('antes').classList.add('oculto');
+  $('form').classList.remove('oculto');
+  $('form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => $('nombres').focus({ preventScroll: true }), 400);
+});
+
+const TIPOS = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
+function prepararZona(zonaId, inputId) {
+  const zona = $(zonaId), input = $(inputId), txt = zona.querySelector('.txt'), ico = zona.querySelector('.ico');
+  const original = txt.textContent;
+  const pintar = () => {
+    const f = input.files[0];
+    let malo = '';
+    if (f && TIPOS.indexOf(f.type) < 0) malo = 'Formato no permitido: usa PDF o imagen.';
+    else if (f && f.size > MAX_MB * 1048576) malo = 'El archivo supera ' + MAX_MB + ' MB.';
+    if (malo) { input.value = ''; error(malo); }
+    const ok = input.files[0];
+    zona.classList.toggle('lleno', !!ok);
+    txt.textContent = ok ? ok.name + ' · ' + (ok.size / 1048576).toFixed(1) + ' MB' : original;
+    ico.textContent = ok ? '✓' : '↑';
+  };
+  input.addEventListener('change', pintar);
+  ['dragenter', 'dragover'].forEach(ev => zona.addEventListener(ev, e => { e.preventDefault(); zona.classList.add('sobre'); }));
+  ['dragleave', 'drop'].forEach(ev => zona.addEventListener(ev, () => zona.classList.remove('sobre')));
+  zona.addEventListener('drop', e => {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) { const dt = new DataTransfer(); dt.items.add(e.dataTransfer.files[0]); input.files = dt.files; pintar(); }
+  });
+}
+prepararZona('zonaCv', 'cv');
+prepararZona('zonaPort', 'portafolio');
+
+function leerArchivo(file) {
+  return new Promise((ok, err) => {
+    if (!file) return ok(null);
+    const r = new FileReader();
+    r.onload = () => ok({ nombre: file.name, mime: file.type, base64: String(r.result).split(',')[1] });
+    r.onerror = () => err(new Error('No se pudo leer ' + file.name));
+    r.readAsDataURL(file);
+  });
+}
+
+$('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  error('');
+  const v = id => $(id).value.trim();
+  const obligatorios = [['nombres', 'nombres'], ['apellidos', 'apellidos'], ['identificacion', 'cédula o pasaporte'],
+    ['email', 'correo'], ['telefono', 'teléfono']];
+  const faltan = obligatorios.filter(([id]) => !v(id));
+  if (faltan.length) { $(faltan[0][0]).focus(); return error('Completa: ' + faltan.map(f => f[1]).join(', ') + '.'); }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'))) { $('email').focus(); return error('Revisa tu correo electrónico.'); }
+  if (!valorCiudad()) { (ciudadElegida && ciudadElegida.otra ? $('ciudadOtra') : $('ciudad')).focus(); return error('Elige tu ciudad de residencia de la lista.'); }
+  const asp = Number(v('aspiracion'));
+  if (!(asp > 0)) { $('aspiracion').focus(); return error('Ingresa tu aspiración salarial mensual en USD.'); }
+  if (asp > 50000) { $('aspiracion').focus(); return error('Revisa tu aspiración salarial: es un valor mensual en USD.'); }
+  for (const id of ['linkedin', 'linkPortafolio']) {
+    if (v(id) && !/^https?:\/\//i.test(v(id))) { $(id).focus(); return error('Los enlaces deben empezar con https://'); }
+  }
+  if (!$('cv').files[0]) return error('Adjunta tu hoja de vida.');
+  if (!$('consentimiento').checked) return error('Para continuar debes aceptar la autorización de tratamiento de datos.');
+
+  $('btnEnviar').disabled = true;
+  ventana('', 'Enviando tu postulación', 'Estamos subiendo tus documentos. No cierres esta página.');
+  try {
+    const [cv, portafolio] = await Promise.all([leerArchivo($('cv').files[0]), leerArchivo($('portafolio').files[0])]);
+    const r = await srv('registrarPostulacion', {
+      idProceso: vacante.id, nombres: v('nombres'), apellidos: v('apellidos'), identificacion: v('identificacion'),
+      email: v('email'), telefono: v('telefono'), ciudad: valorCiudad(), aspiracion: asp,
+      disponibilidad: v('disponibilidad'), linkedin: v('linkedin'), linkPortafolio: v('linkPortafolio'),
+      consentimiento: true, cv: cv, portafolio: portafolio
+    });
+    TOKEN = r.token;
+    try { history.replaceState(null, '', '?t=' + TOKEN); } catch (x) {   }
+    if (!r.reanudar) {
+      ventana('', 'Preparando tu entrevista', 'Estamos revisando tu perfil para preparar las preguntas.\nEsto toma menos de un minuto.');
+      await srv('analizarPostulacion', TOKEN);   
+    }
+    ventana('ok', r.reanudar ? '¡Hola de nuevo, ' + r.nombre + '!' : '¡Listo, ' + r.nombre + '!',
+      r.reanudar ? 'Ya tenemos tu postulación. Continúa con tu entrevista.' : 'Tu postulación fue recibida. Ahora sigue la entrevista.');
+    await espera(1300);
+    cerrarVentana();
+    await abrirSala();
+  } catch (err) {
+    ventana('error', 'No se pudo enviar', err.message);
+    await esperarCierre();
+  } finally {
+    $('btnEnviar').disabled = false;
+  }
+});
+
+
+ 
+const CIUDADES = [
+  
+  ['Quito', 'Pichincha'], ['Guayaquil', 'Guayas'], ['Cuenca', 'Azuay'], ['Ambato', 'Tungurahua'], ['Santo Domingo', 'Santo Domingo de los Tsáchilas'],
+  ['Machala', 'El Oro'], ['Portoviejo', 'Manabí'], ['Loja', 'Loja'], ['Riobamba', 'Chimborazo'], ['Ibarra', 'Imbabura'], ['Esmeraldas', 'Esmeraldas'],
+  ['Babahoyo', 'Los Ríos'], ['Latacunga', 'Cotopaxi'], ['Santa Elena', 'Santa Elena'], ['Tulcán', 'Carchi'], ['Azogues', 'Cañar'],
+  ['Guaranda', 'Bolívar'], ['Puyo', 'Pastaza'], ['Tena', 'Napo'], ['Macas', 'Morona Santiago'], ['Zamora', 'Zamora Chinchipe'],
+  ['Nueva Loja (Lago Agrio)', 'Sucumbíos'], ['Puerto Francisco de Orellana (El Coca)', 'Orellana'], ['Puerto Baquerizo Moreno', 'Galápagos'],
+  
+  ['Quito — Cumbayá', 'Pichincha'], ['Quito — Tumbaco', 'Pichincha'], ['Quito — Calderón', 'Pichincha'], ['Quito — Conocoto', 'Pichincha'],
+  ['Quito — Pomasqui', 'Pichincha'], ['Sangolquí', 'Pichincha'], ['Cayambe', 'Pichincha'], ['Machachi', 'Pichincha'], ['Tabacundo', 'Pichincha'],
+  ['San Miguel de los Bancos', 'Pichincha'], ['Pedro Vicente Maldonado', 'Pichincha'], ['Puerto Quito', 'Pichincha'],
+  
+  ['Durán', 'Guayas'], ['Samborondón', 'Guayas'], ['Daule', 'Guayas'], ['Milagro', 'Guayas'], ['Playas', 'Guayas'], ['El Empalme', 'Guayas'],
+  ['Yaguachi', 'Guayas'], ['Naranjal', 'Guayas'], ['Balzar', 'Guayas'],
+  
+  ['Manta', 'Manabí'], ['Chone', 'Manabí'], ['Montecristi', 'Manabí'], ['Jipijapa', 'Manabí'], ['El Carmen', 'Manabí'],
+  ['Bahía de Caráquez', 'Manabí'], ['Pedernales', 'Manabí'],
+  
+  ['Quevedo', 'Los Ríos'], ['Ventanas', 'Los Ríos'], ['Vinces', 'Los Ríos'], ['Buena Fe', 'Los Ríos'],
+  ['Otavalo', 'Imbabura'], ['Cotacachi', 'Imbabura'], ['Atuntaqui', 'Imbabura'],
+  ['La Libertad', 'Santa Elena'], ['Salinas', 'Santa Elena'],
+  ['Pasaje', 'El Oro'], ['Santa Rosa', 'El Oro'], ['Huaquillas', 'El Oro'], ['El Guabo', 'El Oro'], ['Piñas', 'El Oro'],
+  ['Gualaceo', 'Azuay'], ['Paute', 'Azuay'], ['La Troncal', 'Cañar'], ['Cañar', 'Cañar'], ['Catamayo', 'Loja'],
+  ['Pelileo', 'Tungurahua'], ['Baños de Agua Santa', 'Tungurahua'], ['Salcedo', 'Cotopaxi'], ['La Maná', 'Cotopaxi'], ['Pujilí', 'Cotopaxi'],
+  ['Alausí', 'Chimborazo'], ['Guano', 'Chimborazo'], ['Quinindé', 'Esmeraldas'], ['Atacames', 'Esmeraldas'], ['San Gabriel', 'Carchi'],
+  ['La Concordia', 'Santo Domingo de los Tsáchilas'], ['Shushufindi', 'Sucumbíos'], ['Puerto Ayora', 'Galápagos'],
+  ['Yantzaza', 'Zamora Chinchipe'], ['Gualaquiza', 'Morona Santiago'], ['Sucúa', 'Morona Santiago']
+].map(([c, p]) => ({ ciudad: c, provincia: p, texto: c + ' (' + p + ')' }));
+const OTRA = [{ otra: 'ec', texto: 'Otra ciudad del Ecuador' }, { otra: 'ext', texto: 'Vivo fuera del Ecuador' }];
+const norm = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+let ciudadElegida = null, opcionesCiudad = [], activa = -1;
+
+function filtrarCiudades(q) {
+  const n = norm(q);
+  if (!n) return CIUDADES.slice(0, 24).concat(OTRA);
+  const empieza = [], contiene = [];
+  CIUDADES.forEach(c => {
+    const palabras = norm(c.ciudad).split(/[\s—()-]+/);
+    if (norm(c.ciudad).startsWith(n) || palabras.some(w => w.startsWith(n))) empieza.push(c);
+    else if (norm(c.texto).includes(n)) contiene.push(c);
+  });
+  return empieza.concat(contiene).slice(0, 40).concat(OTRA);
+}
+function resaltar(texto, q) {
+  const n = norm(q);
+  if (!n) return esc(texto);
+  const i = norm(texto).indexOf(n);
+  return i < 0 ? esc(texto) : esc(texto.slice(0, i)) + '<b>' + esc(texto.slice(i, i + n.length)) + '</b>' + esc(texto.slice(i + n.length));
+}
+function pintarCiudades() {
+  const q = $('ciudad').value;
+  opcionesCiudad = filtrarCiudades(q);
+  const reales = opcionesCiudad.filter(o => !o.otra).length;
+  $('listaCiudades').innerHTML = (reales ? '' : '<li class="nada">No encontramos esa ciudad. Elige una opción de abajo.</li>') +
+    opcionesCiudad.map((o, i) => '<li role="option" data-i="' + i + '" class="' + (o.otra ? 'otra' : '') + (i === activa ? ' activo' : '') + '">' +
+      (o.otra ? esc(o.texto) : '<span>' + resaltar(o.ciudad, q) + '</span><small>' + esc(o.provincia) + '</small>') + '</li>').join('');
+  abrirLista(true);
+}
+function abrirLista(abrir) {
+  $('listaCiudades').classList.toggle('oculto', !abrir);
+  $('ciudad').setAttribute('aria-expanded', abrir ? 'true' : 'false');
+}
+function elegirCiudad(o) {
+  ciudadElegida = o;
+  $('ciudad').value = o.texto;
+  $('comboCiudad').classList.toggle('ok', !o.otra);
+  $('ciudadOtra').classList.toggle('oculto', !o.otra);
+  if (o.otra) { $('ciudadOtra').placeholder = o.otra === 'ext' ? 'Ciudad y país donde vives' : 'Escribe tu ciudad'; $('ciudadOtra').focus(); }
+  abrirLista(false);
+}
+$('ciudad').addEventListener('focus', () => { activa = -1; pintarCiudades(); });
+$('ciudad').addEventListener('input', () => {
+  ciudadElegida = null; activa = 0;
+  $('comboCiudad').classList.remove('ok'); $('ciudadOtra').classList.add('oculto');
+  pintarCiudades();
+});
+$('ciudad').addEventListener('keydown', e => {
+  if ($('listaCiudades').classList.contains('oculto') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { pintarCiudades(); return; }
+  if (e.key === 'ArrowDown') { e.preventDefault(); activa = Math.min(activa + 1, opcionesCiudad.length - 1); pintarCiudades(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); activa = Math.max(activa - 1, 0); pintarCiudades(); }
+  else if (e.key === 'Enter') { if (activa >= 0 && opcionesCiudad[activa]) { e.preventDefault(); elegirCiudad(opcionesCiudad[activa]); } }
+  else if (e.key === 'Escape') abrirLista(false);
+  const li = $('listaCiudades').querySelector('li.activo');
+  if (li) li.scrollIntoView({ block: 'nearest' });
+});
+$('listaCiudades').addEventListener('mousedown', e => {
+  const li = e.target.closest('li[data-i]');
+  if (!li) return;
+  e.preventDefault();
+  elegirCiudad(opcionesCiudad[Number(li.dataset.i)]);
+});
+$('ciudad').addEventListener('blur', () => setTimeout(() => {
+  abrirLista(false);
+  if (!ciudadElegida) {   
+    const exacta = CIUDADES.find(c => norm(c.ciudad) === norm($('ciudad').value) || norm(c.texto) === norm($('ciudad').value));
+    if (exacta) elegirCiudad(exacta);
+  }
+}, 120));
+function valorCiudad() {
+  if (!ciudadElegida) return '';
+  if (!ciudadElegida.otra) return ciudadElegida.texto;
+  const t = $('ciudadOtra').value.trim();
+  return t ? (ciudadElegida.otra === 'ext' ? 'Exterior: ' : 'Otra: ') + t : '';
+}
+
+ 
+
+async function abrirSala() {
+  const d = await srv('datosPostulacion', TOKEN);
+  if (d.completada) {
+    $('finTitulo').textContent = '¡Gracias, ' + d.nombre + '!';
+    $('finTexto').textContent = 'Tu postulación a ' + d.cargo + ' ya está completa. Talento Humano te contactará por correo electrónico.';
+    return seccion('sFin', 3);
+  }
+  $('cargoEntrevista').textContent = d.cargo;
+  $('subtitulo').textContent = 'Hola ' + d.nombre + ', cuando estés listo o lista presiona "Comenzar entrevista".';
+  seccion('sEntrevista', 2);
+}
+
+function agregarMsg(texto, quien) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + quien;
+  if (quien === 'ia escribiendo') div.innerHTML = '<i></i><i></i><i></i>'; else div.textContent = texto;
+  $('chat').appendChild(div);
+  $('chat').scrollTop = $('chat').scrollHeight;
+  return div;
+}
+function estadoAvatar(estado, texto) {
+  const w = $('avatarWrap');
+  w.classList.remove('hablando', 'escuchando', 'pensando');
+  if (estado) w.classList.add(estado);
+  $('estadoAvatar').textContent = texto;
+}
+
+ 
+const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
+const puedeGrabar = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+
+let motor = Reconocimiento && TIEMPOS.stt !== 'gemini' && !esIOS ? 'dictado' : puedeGrabar ? 'grabacion' : '';
+let modo = motor ? 'voz' : 'escrito';
+let turnoId = 0, regrabaciones = 0, cancelarReloj = null, fase = '';
+
+function mostrar(id, si) { $(id).classList.toggle('oculto', !si); }
+function panel(cual) {          
+  mostrar('vozPanel', cual === 'voz');
+  mostrar('escritoPanel', cual === 'escrito');
+  if (cual && window.matchMedia('(max-width: 760px)').matches)
+    requestAnimationFrame(() => $('entrada').scrollIntoView({ behavior: 'smooth', block: 'end' }));
+  mostrar('btnModo', !!motor && cual !== '' && fase !== 'transcribiendo');
+  $('btnModo').textContent = modo === 'voz' ? '✍️ Prefiero escribir mi respuesta' : '🎤 Responder hablando';
+}
+function bloquear(b) {
+  ocupado = b;
+  ['btnResponder', 'btnTerminar', 'btnRegrabar', 'btnModo'].forEach(id => { $(id).disabled = b; });
+  $('respuesta').disabled = b;
+}
+
+ 
+function relojAnillo(seg, texto, clase, alTerminar) {
+  const anillo = $('relojAvance'), L = 326.7, t0 = Date.now();
+  $('reloj').className = 'reloj ' + (clase || '');
+  $('relojTxt').textContent = texto;
+  let vivo = true;
+  const paso = () => {
+    if (!vivo) return;
+    const resta = Math.max(0, seg - (Date.now() - t0) / 1000);
+    const r = Math.ceil(resta);
+    $('relojNum').textContent = seg >= 60 ? Math.floor(r / 60) + ':' + String(r % 60).padStart(2, '0') : r;
+    anillo.style.strokeDashoffset = (L * (1 - resta / seg)).toFixed(1);
+    $('reloj').classList.toggle('poco', clase === 'grabando' && resta <= 10);
+    if (resta <= 0) { vivo = false; alTerminar(); return; }
+    setTimeout(paso, 200);
+  };
+  paso();
+  return () => { vivo = false; };
+}
+function pararReloj() { if (cancelarReloj) cancelarReloj(); cancelarReloj = null; }
+
+function iniciarTurno() {
+  const id = ++turnoId;
+  regrabaciones = 0;
+  $('respuesta').value = '';
+  bloquear(false);
+  if (modo === 'voz') prepararVoz(id); else modoEscrito(id, '');
+}
+
+ 
+function prepararVoz(id) {
+  fase = 'prep';
+  $('turnoMsg').textContent = 'Prepárate: la grabación empieza sola en ' + TIEMPOS.prep + ' segundos.';
+  $('textoVivo').textContent = ''; $('textoVivo').dataset.vacio = 'Aquí verás lo que vas diciendo.';
+  mostrar('btnEmpezarYa', true); mostrar('btnParar', false); mostrar('nivelMic', false);
+  panel('voz');
+  estadoAvatar('', 'Prepárate');
+  pararReloj();
+  cancelarReloj = relojAnillo(TIEMPOS.prep, 'Prepárate', '', () => { if (id === turnoId) grabar(id); });
+}
+$('btnEmpezarYa').addEventListener('click', () => { if (fase === 'prep') { pararReloj(); grabar(turnoId); } });
+
+ 
+let rec = null, dictado = { final: '', parcial: '' }, grabadora = null, trozos = [], flujo = null, medidor = null;
+async function grabar(id) {
+  fase = 'grabando';
+  $('turnoMsg').textContent = 'Responde con calma. Cuando termines, pulsa "Terminar respuesta".';
+  mostrar('btnEmpezarYa', false); mostrar('btnParar', true);
+  estadoAvatar('escuchando', 'Te escucho…');
+  try {
+    if (motor === 'dictado') iniciarDictado(); else await iniciarGrabadora();
+  } catch (e) {
+    return modoEscrito(id, 'No pudimos usar tu micrófono (' + (e.message || e.name) + '). Puedes escribir tu respuesta.');
+  }
+  if (id !== turnoId) return;
+  pararReloj();
+  cancelarReloj = relojAnillo(TIEMPOS.voz, 'Grabando', 'grabando', () => { if (id === turnoId && fase === 'grabando') terminarGrabacion(id, true); });
+}
+$('btnParar').addEventListener('click', () => { if (fase === 'grabando') terminarGrabacion(turnoId, false); });
+
+function iniciarDictado() {
+  dictado = { final: '', parcial: '' };
+  rec = new Reconocimiento();
+  rec.lang = 'es-EC'; rec.continuous = true; rec.interimResults = true;
+  rec.onresult = ev => {
+    let parcial = '';
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
+      if (ev.results[i].isFinal) dictado.final += ev.results[i][0].transcript + ' ';
+      else parcial += ev.results[i][0].transcript;
+    }
+    dictado.parcial = parcial;
+    $('textoVivo').textContent = (dictado.final + parcial).replace(/\s+/g, ' ').trim();
+    $('textoVivo').scrollTop = $('textoVivo').scrollHeight;
+  };
+  rec.onerror = ev => {
+    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed' || ev.error === 'audio-capture') {
+      rec.sinPermiso = true; rec = null;
+      pararReloj();
+      if (puedeGrabar) { motor = 'grabacion'; grabar(turnoId); }      
+      else { motor = ''; modo = 'escrito'; modoEscrito(turnoId, 'No pudimos usar tu micrófono. Puedes escribir tu respuesta.'); }
+    }
+  };
+  const este = rec;
+  este.onend = () => { if (fase === 'grabando' && rec === este) { try { este.start(); } catch (e) {   } } if (este.alTerminar) este.alTerminar(); };
+  este.start();
+}
+
+async function iniciarGrabadora() {
+  if (!flujo || !flujo.active) flujo = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+  trozos = [];
+  grabadora = new MediaRecorder(flujo);
+  grabadora.ondataavailable = e => { if (e.data && e.data.size) trozos.push(e.data); };
+  grabadora.start(500);
+  $('textoVivo').dataset.vacio = '🎙️ Grabando… al terminar convertiremos tu voz en texto.';
+  mostrar('nivelMic', true);
+  try {     
+    const ctx = audioCtx();
+    const fuente = ctx.createMediaStreamSource(flujo), an = ctx.createAnalyser();
+    an.fftSize = 512; fuente.connect(an);
+    const datos = new Uint8Array(an.fftSize);
+    medidor = () => {
+      if (fase !== 'grabando') { fuente.disconnect(); return; }
+      an.getByteTimeDomainData(datos);
+      let s = 0; for (let i = 0; i < datos.length; i++) { const v = (datos[i] - 128) / 128; s += v * v; }
+      $('nivelBarra').style.width = Math.min(100, Math.sqrt(s / datos.length) * 380) + '%';
+      requestAnimationFrame(medidor);
+    };
+    medidor();
+  } catch (e) {   }
+}
+
+async function terminarGrabacion(id, porTiempo) {
+  pararReloj();
+  fase = 'transcribiendo';
+  mostrar('btnParar', false);
+  estadoAvatar('pensando', 'Un momento…');
+  let texto = '';
+  try {
+    if (motor === 'dictado' || (rec && !grabadora)) {
+      texto = await new Promise(ok => {
+        const fin = () => ok((dictado.final + ' ' + dictado.parcial).replace(/\s+/g, ' ').trim());
+        if (!rec) return fin();
+        rec.alTerminar = fin; setTimeout(fin, 1500);
+        try { rec.stop(); } catch (e) { fin(); }
+      });
+      rec = null;
+      if (!texto && motor === 'grabacion') { if (id === turnoId) prepararVoz(id); return; }   
+    } else {
+      $('turnoMsg').textContent = 'Convirtiendo tu voz en texto…';
+      const blob = await new Promise(ok => { grabadora.onstop = () => ok(new Blob(trozos, { type: grabadora.mimeType || 'audio/webm' })); grabadora.stop(); });
+      grabadora = null;
+      const wav = await aWav(blob);
+      const r = await srv('transcribirRespuesta', TOKEN, wav);
+      texto = r.texto === '(sin audio claro)' ? '' : r.texto;
+    }
+  } catch (e) {
+    texto = '';
+  }
+  if (id !== turnoId) return;
+  revisar(id, texto, porTiempo);
+}
+
+ 
+function revisar(id, texto, porTiempo) {
+  fase = 'revisar';
+  $('respuesta').value = texto;
+  estadoAvatar('', 'Revisa tu respuesta');
+  $('turnoMsg').textContent = '';
+  $('ayudaEscrito').textContent = texto
+    ? (porTiempo ? 'Se acabó el minuto. ' : '') + 'Esto es lo que entendimos. Corrige alguna palabra si hace falta y pulsa "Enviar respuesta".'
+    : 'No logramos escucharte bien. Puedes grabar de nuevo o escribir tu respuesta.';
+  mostrar('relojEscrito', false);
+  mostrar('btnRegrabar', regrabaciones < 1 || !texto);
+  panel('escrito');
+  if (!texto) $('respuesta').focus();
+}
+$('btnRegrabar').addEventListener('click', () => { if (ocupado) return; regrabaciones++; prepararVoz(turnoId); });
+
+ 
+function modoEscrito(id, aviso) {
+  fase = 'escrito';
+  pararReloj();
+  if (rec) { try { rec.abort(); } catch (e) {   } rec = null; }
+  if (grabadora) { try { grabadora.stop(); } catch (e) {   } grabadora = null; }
+  estadoAvatar('', 'Te leo');
+  $('turnoMsg').textContent = '';
+  $('ayudaEscrito').textContent = aviso || 'Escribe tu respuesta y pulsa "Enviar respuesta".';
+  mostrar('btnRegrabar', false);
+  panel('escrito');
+  $('respuesta').focus();
+  if (TIEMPOS.escrita > 0) {
+    const t0 = Date.now();
+    mostrar('relojEscrito', true);
+    let vivo = true;
+    const paso = () => {
+      if (!vivo || id !== turnoId || fase !== 'escrito') return;
+      const resta = Math.max(0, TIEMPOS.escrita - (Date.now() - t0) / 1000);
+      $('relojEscrito').textContent = '⏱ ' + Math.floor(resta / 60) + ':' + String(Math.floor(resta % 60)).padStart(2, '0');
+      $('relojEscrito').classList.toggle('poco', resta <= 15);
+      if (resta <= 0) { vivo = false; if ($('respuesta').value.trim()) enviar(); else $('ayudaEscrito').textContent = 'Se acabó el tiempo. Escribe al menos una idea y envíala.'; return; }
+      setTimeout(paso, 250);
+    };
+    cancelarReloj = () => { vivo = false; };
+    paso();
+  } else mostrar('relojEscrito', false);
+}
+$('btnModo').addEventListener('click', () => {
+  if (ocupado) return;
+  modo = modo === 'voz' ? 'escrito' : 'voz';
+  if (modo === 'escrito') modoEscrito(turnoId, ''); else { pararReloj(); prepararVoz(turnoId); }
+});
+
+ 
+async function aWav(blob) {
+  const ctx = audioCtx();
+  const datos = await blob.arrayBuffer();
+  const audio = await new Promise((ok, err) => ctx.decodeAudioData(datos, ok, err));
+  const sr = 16000, Off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  const off = new Off(1, Math.max(1, Math.ceil(audio.duration * sr)), sr);
+  const src = off.createBufferSource(); src.buffer = audio; src.connect(off.destination); src.start(0);
+  const r = await off.startRendering();
+  const d = r.getChannelData(0), buf = new ArrayBuffer(44 + d.length * 2), v = new DataView(buf);
+  const txt = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  txt(0, 'RIFF'); v.setUint32(4, 36 + d.length * 2, true); txt(8, 'WAVE'); txt(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true);
+  v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); txt(36, 'data'); v.setUint32(40, d.length * 2, true);
+  for (let i = 0; i < d.length; i++) { const s = Math.max(-1, Math.min(1, d[i])); v.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true); }
+  let bin = ''; const bytes = new Uint8Array(buf);
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
+ 
+async function mensajeIA(promesa) {
+  bloquear(true); pararReloj(); fase = 'espera';
+  panel(''); $('turnoMsg').textContent = '';
+  estadoAvatar('pensando', 'Pensando…');
+  const temp = agregarMsg('', 'ia escribiendo');
+  try {
+    const r = await promesa;
+    temp.remove();
+    agregarMsg(r.mensaje, 'ia');
+    $('barraProgreso').style.width = Math.round((r.progreso || 0) * 100) + '%';
+    $('turnoMsg').textContent = 'Escucha la pregunta…';
+    await hablar(r.mensaje, r.audio);
+    if (r.finalizar) return cerrarEntrevista();
+    iniciarTurno();
+  } catch (e) {
+    temp.remove();
+    estadoAvatar('', 'Hubo un problema');
+    agregarMsg('⚠️ ' + e.message + ' Intenta enviar tu respuesta de nuevo.', 'ia');
+    bloquear(false);
+    fase = 'escrito'; panel('escrito');
+    throw e;
+  }
+}
+
+$('btnComenzar').addEventListener('click', async () => {
+  desbloquearVoz();
+  if (motor === 'grabacion') {           
+    try { flujo = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
+    catch (e) { motor = ''; modo = 'escrito'; }
+  }
+  $('inicioEntrevista').classList.add('oculto');
+  $('entrada').classList.remove('oculto');
+  if (!motor) agregarMsg('No pudimos activar el micrófono en este navegador, así que responderás escribiendo.', 'ia');
+  try { await mensajeIA(srv('iniciarEntrevista', TOKEN)); }
+  catch (e) { $('inicioEntrevista').classList.remove('oculto'); $('entrada').classList.add('oculto'); }
+});
+
+async function enviar() {
+  const texto = $('respuesta').value.trim();
+  if (!texto || ocupado) return;
+  pararReloj();
+  agregarMsg(texto, 'yo');
+  $('respuesta').value = '';
+  try { await mensajeIA(srv('responderEntrevista', TOKEN, texto)); }
+  catch (e) { $('respuesta').value = texto; }
+}
+$('btnResponder').addEventListener('click', enviar);
+$('respuesta').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) enviar(); });
+
+$('btnTerminar').addEventListener('click', async () => {
+  if (!confirm('¿Seguro que deseas terminar la entrevista ahora? Se evaluará con lo conversado hasta el momento.')) return;
+  await cerrarEntrevista();
+});
+
+ 
+
+async function cerrarEntrevista() {
+  if (terminada) return;
+  terminada = true;
+  turnoId++; pararReloj(); bloquear(true); panel('');
+  if (rec) { try { rec.abort(); } catch (e) {   } }
+  if (flujo) flujo.getTracks().forEach(t => t.stop());
+  $('barraProgreso').style.width = '100%';
+  ventana('', 'Guardando tu entrevista', 'Estamos registrando tu postulación completa. No cierres esta página.');
+  for (let intento = 0; intento < 3; intento++) {
+    try { await srv('finalizarEntrevista', TOKEN); break; }
+    catch (e) { if (intento < 2) await espera(3000); }
+  }
+  ventana('ok', '¡Postulación completa!', '');
+  await espera(1200);
+  cerrarVentana();
+  seccion('sFin', 3);
+}
+
+
+
+let ctxAudio = null, analizador = null, audioSofia = new Audio();
+audioSofia.preload = 'auto';
+function audioCtx() {
+  if (!ctxAudio) ctxAudio = new (window.AudioContext || window.webkitAudioContext)();
+  if (ctxAudio.state === 'suspended') ctxAudio.resume();
+  return ctxAudio;
+}
+let vozES = null;
+function puntajeVoz(v) {
+  const n = v.name, l = v.lang.replace('_', '-');
+  let p = 0;
+  if (/natural|neural|online|premium|enhanced|mejorad/i.test(n)) p += 40;
+  if (/google/i.test(n)) p += 22;
+  if (/desktop|espeak|microsoft (helena|sabina|laura|pablo|raul)\b/i.test(n) && !/online|natural/i.test(n)) p -= 30;
+  p += ({ 'es-EC': 8, 'es-419': 8, 'es-US': 8, 'es-MX': 7, 'es-CO': 7, 'es-PE': 6, 'es-CL': 5, 'es-AR': 5 })[l] || (l === 'es-ES' ? 0 : 2);
+  if (/andrea|dalia|paloma|salome|camila|paulina|m[oó]nica|marisol|sof[ií]a|ximena|larissa|valentina|female|mujer/i.test(n)) p += 4;
+  if (!v.localService) p += 2;
+  return p;
+}
+function elegirVoz() {
+  const voces = speechSynthesis.getVoices().filter(v => /^es/i.test(v.lang));
+  vozES = voces.sort((a, b) => puntajeVoz(b) - puntajeVoz(a))[0] || null;
+}
+if ('speechSynthesis' in window) { elegirVoz(); speechSynthesis.onvoiceschanged = elegirVoz; }
+function desbloquearVoz() {
+  
+  try {
+    const ctx = audioCtx();
+    if (!analizador) {
+      const fuente = ctx.createMediaElementSource(audioSofia);
+      analizador = ctx.createAnalyser(); analizador.fftSize = 256;
+      fuente.connect(analizador); analizador.connect(ctx.destination);
+    }
+  } catch (e) { analizador = null; }
+  audioSofia.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
+  audioSofia.play().catch(() => {});
+  if ('speechSynthesis' in window) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); }
+}
+$('btnVoz').addEventListener('click', () => {
+  vozActiva = !vozActiva;
+  $('btnVoz').textContent = vozActiva ? '🔊 Voz' : '🔇 Silencio';
+  if (!vozActiva) { audioSofia.pause(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+});
+
+function hablar(texto, audio) {
+  $('subtitulo').textContent = texto;
+  if (!vozActiva) return espera(400);
+  if (audio) return hablarAudio(audio).catch(() => hablarNavegador(texto));
+  return hablarNavegador(texto);
+}
+function hablarAudio(uri) {
+  estadoAvatar('hablando', 'Hablando…');
+  ANIM.hablando = true; ANIM.conAudio = !!analizador;
+  return new Promise((ok, err) => {
+    let fin = false;
+    const terminar = e => { if (fin) return; fin = true; ANIM.hablando = false; ANIM.conAudio = false; e ? err(e) : ok(); };
+    audioSofia.onended = () => terminar();
+    audioSofia.onerror = () => terminar(new Error('audio'));
+    audioSofia.src = uri;
+    const p = audioSofia.play();
+    if (p && p.catch) p.catch(terminar);
+    audioSofia.onloadedmetadata = () => { setTimeout(() => terminar(), (audioSofia.duration || 30) * 1000 + 2500); };
+  });
+}
+ 
+function hablarNavegador(texto) {
+  if (!('speechSynthesis' in window)) return espera(400);
+  speechSynthesis.cancel();
+  const frases = (texto.match(/[^.!?¿¡]+[.!?…]*|[¿¡][^?!]+[?!]/g) || [texto]).map(f => f.trim()).filter(Boolean);
+  estadoAvatar('hablando', 'Hablando…');
+  ANIM.hablando = true;
+  return new Promise(resolve => {
+    let i = 0, fin = false;
+    const terminar = () => { if (fin) return; fin = true; ANIM.hablando = false; resolve(); };
+    const seguro = setTimeout(terminar, 6000 + texto.length * 110);
+    const siguiente = () => {
+      if (i >= frases.length || !vozActiva) { clearTimeout(seguro); return terminar(); }
+      const frase = frases[i++];
+      const u = new SpeechSynthesisUtterance(frase);
+      u.lang = vozES ? vozES.lang : 'es-419';
+      if (vozES) u.voice = vozES;
+      u.rate = /natural|neural|online|google/i.test(vozES ? vozES.name : '') ? 1.0 : 0.95;
+      u.onstart = () => { ANIM.pulso = 1; };
+      u.onboundary = e => { if (e.name === 'word' || e.name === undefined) { ANIM.pulso = 0.6 + Math.random() * 0.4; ANIM.conLimites = true; } };
+      u.onend = () => { ANIM.pausa = performance.now() + (/[?¿]/.test(frase) ? 380 : 260); setTimeout(siguiente, /[?¿]/.test(frase) ? 380 : 260); };
+      u.onerror = siguiente;
+      speechSynthesis.speak(u);
+    };
+    siguiente();
+  });
+}
+
+ 
+const ANIM = { hablando: false, conAudio: false, pulso: 0, conLimites: false, pausa: 0, abierto: 0, miradaX: 0, miradaY: 0, objX: 0, objY: 0, cejas: 0 };
+const ondaVoz = new Uint8Array(256);
+if (AVATAR_FOTO) { $('avatarFoto').src = AVATAR_FOTO; $('avatarFoto').classList.remove('oculto'); $('avatar').classList.add('oculto'); }
+
+(function animar() {
+  const t = performance.now() / 1000;
+  
+  let objetivo = 0;
+  if (ANIM.hablando && ANIM.conAudio && analizador) {
+    analizador.getByteTimeDomainData(ondaVoz);
+    let s = 0; for (let i = 0; i < ondaVoz.length; i++) { const v = (ondaVoz[i] - 128) / 128; s += v * v; }
+    objetivo = Math.min(1, Math.sqrt(s / ondaVoz.length) * 5.5);
+  } else if (ANIM.hablando && performance.now() > ANIM.pausa) {
+    if (ANIM.conLimites) { objetivo = ANIM.pulso; ANIM.pulso *= 0.86; }
+    else objetivo = 0.35 + 0.35 * Math.abs(Math.sin(t * 9.5)) * (0.6 + 0.4 * Math.sin(t * 2.3)) + 0.15 * Math.sin(t * 17);
+  }
+  ANIM.abierto += (Math.max(0, Math.min(1, objetivo)) - ANIM.abierto) * 0.4;
+  const o = ANIM.abierto;
+  $('bocaInt').setAttribute('ry', (1.2 + o * 6.5).toFixed(2));
+  $('bocaInt').setAttribute('cy', (147.5 + o * 2).toFixed(2));
+  $('labioInf').setAttribute('transform', 'translate(0 ' + (o * 6.5).toFixed(2) + ')');
+  $('labioSup').setAttribute('transform', 'translate(0 ' + (-o * 0.8).toFixed(2) + ')');
+  $('dientes').setAttribute('opacity', o > 0.3 ? '0.9' : '0');
+  document.documentElement.style.setProperty('--voz', o.toFixed(2));
+
+  const estado = $('avatarWrap').className;
+  const escucha = /escuchando/.test(estado), piensa = /pensando/.test(estado);
+  const giro = Math.sin(t * 0.7) * 1.4 + (ANIM.hablando ? Math.sin(t * 1.9) * 1.2 : 0) + (piensa ? -4 : 0);
+  const sube = Math.sin(t * 1.3) * 0.8 + (escucha ? Math.max(0, Math.sin(t * 2.2)) * 1.8 : 0);
+  $('cabeza').setAttribute('transform', 'rotate(' + giro.toFixed(2) + ' 120 186) translate(0 ' + sube.toFixed(2) + ')');
+  $('cuerpo').setAttribute('transform', 'translate(0 ' + (Math.sin(t * 1.3) * 0.7).toFixed(2) + ')');
+
+  if (Math.random() < 0.012) { ANIM.objX = (Math.random() - 0.5) * 3; ANIM.objY = (Math.random() - 0.5) * 1.4; }
+  if (piensa) { ANIM.objX = 2; ANIM.objY = -1.6; }
+  ANIM.miradaX += (ANIM.objX - ANIM.miradaX) * 0.15; ANIM.miradaY += (ANIM.objY - ANIM.miradaY) * 0.15;
+  $('iris').setAttribute('transform', 'translate(' + ANIM.miradaX.toFixed(2) + ' ' + ANIM.miradaY.toFixed(2) + ')');
+  const cejaObj = ANIM.hablando ? 1.4 + Math.max(0, Math.sin(t * 1.1)) * 1.2 : (escucha ? 0.8 : 0);
+  ANIM.cejas += (cejaObj - ANIM.cejas) * 0.1;
+  $('cejas').setAttribute('transform', 'translate(0 ' + (-ANIM.cejas).toFixed(2) + ')');
+  requestAnimationFrame(animar);
+})();
+(function parpadear() {
+  $('ojos').classList.add('parpadeo');
+  setTimeout(() => $('ojos').classList.remove('parpadeo'), 120);
+  if (Math.random() < 0.15) setTimeout(() => { $('ojos').classList.add('parpadeo'); setTimeout(() => $('ojos').classList.remove('parpadeo'), 110); }, 260);
+  setTimeout(parpadear, 2200 + Math.random() * 3800);
+})();
+
+iniciar();
+</script></body>
+</html>

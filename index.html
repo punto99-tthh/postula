@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <script>
-var API_URL = "https://script.google.com/a/pto99.com/macros/s/AKfycbydPu9JO6AFYepdxoodcl9DqIZem-YvJ-LN6s_keYjRsQZIm1r3/exec";
+var API_URL = "https://script.google.com/macros/s/AKfycbzYttE0zH5FJDa57JChPPXOdAO_S88_3xgseZaZQRQRKP-agRKF6YlDIrsr8oUdeEeAdQ/exec";
 /* Los enlaces de la prueba técnica y de calificación se abren directamente en Apps Script */
 (function () { var q = new URLSearchParams(location.search); if (q.get("prueba") || q.get("calificar")) location.replace(API_URL + location.search); })();
 /* Reemplazo de google.script.run: cada llamada viaja a Apps Script con fetch */
@@ -11,9 +11,10 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
   if (fn === "withFailureHandler") return function (f) { return crear(ok, f); };
   return function () { var args = Array.prototype.slice.call(arguments);
     fetch(API_URL, { method: "POST", redirect: "follow", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ fn: fn, args: args }) })
-      .then(function (r) { return r.json(); })
-      .then(function (r) { if (r.ok) { if (ok) ok(r.result); } else if (mal) mal(new Error(r.error)); })
-      .catch(function () { if (mal) mal(new Error("No pudimos conectarnos. Revisa tu internet e inténtalo de nuevo.")); });
+      .then(function (r) { return r.text(); }, function () { throw new Error("No pudimos conectarnos con el servidor. Revisa tu internet e inténtalo de nuevo."); })
+      .then(function (t) { var r; try { r = JSON.parse(t); } catch (e) { throw new Error("El servidor no respondió como se esperaba. Inténtalo de nuevo en unos minutos."); }
+        if (r.ok) { if (ok) ok(r.result); } else if (mal) mal(new Error(r.error)); })
+      .catch(function (e) { if (mal) mal(e); });
   }; } }); })() } };
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">

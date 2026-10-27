@@ -172,6 +172,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   }
 </style>
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
   <style>
      
     .barra { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px; padding: 12px 28px;
@@ -335,7 +336,8 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
     .vivo:empty::before { content: attr(data-vacio); color: var(--tenue); font-family: var(--f-comp); font-size: 13px; }
     .nivel { height: 8px; border-radius: 99px; background: var(--gris-claro); overflow: hidden; }
     .nivel i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--lima), var(--azul)); transition: width .08s linear; }
-    .escrito-panel { display: grid; gap: 8px; animation: entrar .25s ease-out both; }
+    .escrito-panel, .audio-panel { display: grid; gap: 8px; animation: entrar .25s ease-out both; }
+    .audio-panel audio { width: 100%; height: 44px; }
     .fila-escrito { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
     .reloj-mini { font-family: var(--f-comp); font-weight: 700; font-size: 13px; color: var(--azul); background: var(--azul-claro); padding: 3px 10px; border-radius: 99px; }
     .reloj-mini.poco { color: var(--rojo); background: var(--rojo-claro); }
@@ -465,7 +467,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
           </div>
         </div>
         <label class="campo">Disponibilidad para empezar
-          <select id="disponibilidad"><option value="">Selecciona…</option><option>Inmediata</option><option>15 días</option><option>30 días</option><option>Más de 30 días</option></select>
+          <select id="disponibilidad"><option value="">Selecciona…</option><option>Inmediata</option><option>7 días</option><option>15 días</option></select>
         </label>
         <label class="campo completo">Perfil de LinkedIn <span class="ayuda">Opcional</span><input id="linkedin" type="url" inputmode="url" placeholder="https://www.linkedin.com/in/…"></label>
       </div>
@@ -574,7 +576,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
         </div>
         <div class="chat" id="chat"></div>
         <div class="inicio" id="inicioEntrevista">
-          Son 5 preguntas. Después de cada una tendrás <b>5 segundos</b> para prepararte y hasta <b>1 minuto</b> para responder <b>hablando</b>.
+          Son 5 preguntas. Después de cada una tendrás <b>5 segundos</b> para prepararte y hasta <b>1 minuto</b> para responder con una <b>nota de voz</b>, que podrás escuchar y grabar de nuevo una vez.
           Si no puedes hablar, también puedes <b>escribir</b> tu respuesta. Busca un lugar tranquilo y permite el uso del micrófono.
           <button class="btn primario" id="btnComenzar">Comenzar entrevista</button>
         </div>
@@ -598,11 +600,20 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
           </div>
 
           
+          <div class="audio-panel oculto" id="audioPanel">
+            <span class="tenue chico" id="ayudaAudio"></span>
+            <audio id="audioRespuesta" controls preload="auto"></audio>
+            <div class="acciones-chat">
+              <button class="btn" id="btnRegrabar">🔁 Grabar de nuevo</button>
+              <button class="btn primario" id="btnEnviarAudio">Enviar respuesta</button>
+            </div>
+          </div>
+
+          
           <div class="escrito-panel oculto" id="escritoPanel">
             <div class="fila-escrito"><span class="tenue chico" id="ayudaEscrito"></span><span class="reloj-mini oculto" id="relojEscrito"></span></div>
             <textarea id="respuesta" rows="4" placeholder="Escribe tu respuesta…"></textarea>
             <div class="acciones-chat">
-              <button class="btn oculto" id="btnRegrabar">🔁 Grabar de nuevo</button>
               <button class="btn primario" id="btnResponder">Enviar respuesta</button>
             </div>
           </div>
@@ -975,27 +986,27 @@ function estadoAvatar(estado, texto) {
   $('estadoAvatar').textContent = texto;
 }
 
- 
-const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
-const puedeGrabar = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
 
-let motor = Reconocimiento && TIEMPOS.stt !== 'gemini' && !esIOS ? 'dictado' : puedeGrabar ? 'grabacion' : '';
+
+const puedeGrabar = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+let motor = puedeGrabar ? 'grabacion' : '';
 let modo = motor ? 'voz' : 'escrito';
 let turnoId = 0, regrabaciones = 0, cancelarReloj = null, fase = '';
+let grabadora = null, trozos = [], flujo = null, medidor = null, nota = null, ultimoEnvio = 'texto';
 
 function mostrar(id, si) { $(id).classList.toggle('oculto', !si); }
 function panel(cual) {          
   mostrar('vozPanel', cual === 'voz');
+  mostrar('audioPanel', cual === 'audio');
   mostrar('escritoPanel', cual === 'escrito');
   if (cual && window.matchMedia('(max-width: 760px)').matches)
     requestAnimationFrame(() => $('entrada').scrollIntoView({ behavior: 'smooth', block: 'end' }));
-  mostrar('btnModo', !!motor && cual !== '' && fase !== 'transcribiendo');
-  $('btnModo').textContent = modo === 'voz' ? '✍️ Prefiero escribir mi respuesta' : '🎤 Responder hablando';
+  mostrar('btnModo', !!motor && cual !== '' && cual !== 'audio');
+  $('btnModo').textContent = modo === 'voz' ? '✍️ Prefiero escribir mi respuesta' : '🎤 Responder con nota de voz';
 }
 function bloquear(b) {
   ocupado = b;
-  ['btnResponder', 'btnTerminar', 'btnRegrabar', 'btnModo'].forEach(id => { $(id).disabled = b; });
+  ['btnResponder', 'btnTerminar', 'btnRegrabar', 'btnModo', 'btnEnviarAudio'].forEach(id => { $(id).disabled = b; });
   $('respuesta').disabled = b;
 }
 
@@ -1022,7 +1033,7 @@ function pararReloj() { if (cancelarReloj) cancelarReloj(); cancelarReloj = null
 
 function iniciarTurno() {
   const id = ++turnoId;
-  regrabaciones = 0;
+  regrabaciones = 0; nota = null;
   $('respuesta').value = '';
   bloquear(false);
   if (modo === 'voz') prepararVoz(id); else modoEscrito(id, '');
@@ -1032,7 +1043,8 @@ function iniciarTurno() {
 function prepararVoz(id) {
   fase = 'prep';
   $('turnoMsg').textContent = 'Prepárate: la grabación empieza sola en ' + TIEMPOS.prep + ' segundos.';
-  $('textoVivo').textContent = ''; $('textoVivo').dataset.vacio = 'Aquí verás lo que vas diciendo.';
+  $('textoVivo').textContent = '';
+  $('textoVivo').dataset.vacio = 'Cuando empiece la grabación, responde con calma. Tienes hasta ' + (TIEMPOS.voz >= 60 ? TIEMPOS.voz / 60 + ' minuto' + (TIEMPOS.voz > 60 ? 's' : '') : TIEMPOS.voz + ' segundos') + '.';
   mostrar('btnEmpezarYa', true); mostrar('btnParar', false); mostrar('nivelMic', false);
   panel('voz');
   estadoAvatar('', 'Prepárate');
@@ -1042,16 +1054,15 @@ function prepararVoz(id) {
 $('btnEmpezarYa').addEventListener('click', () => { if (fase === 'prep') { pararReloj(); grabar(turnoId); } });
 
  
-let rec = null, dictado = { final: '', parcial: '' }, grabadora = null, trozos = [], flujo = null, medidor = null;
 async function grabar(id) {
   fase = 'grabando';
-  $('turnoMsg').textContent = 'Responde con calma. Cuando termines, pulsa "Terminar respuesta".';
+  $('turnoMsg').textContent = 'Te estamos grabando. Cuando termines, pulsa "Terminar respuesta".';
   mostrar('btnEmpezarYa', false); mostrar('btnParar', true);
   estadoAvatar('escuchando', 'Te escucho…');
-  try {
-    if (motor === 'dictado') iniciarDictado(); else await iniciarGrabadora();
-  } catch (e) {
-    return modoEscrito(id, 'No pudimos usar tu micrófono (' + (e.message || e.name) + '). Puedes escribir tu respuesta.');
+  try { await iniciarGrabadora(); }
+  catch (e) {
+    motor = ''; modo = 'escrito';
+    return modoEscrito(id, 'No pudimos usar tu micrófono. Revisa el permiso del navegador o escribe tu respuesta.');
   }
   if (id !== turnoId) return;
   pararReloj();
@@ -1059,40 +1070,14 @@ async function grabar(id) {
 }
 $('btnParar').addEventListener('click', () => { if (fase === 'grabando') terminarGrabacion(turnoId, false); });
 
-function iniciarDictado() {
-  dictado = { final: '', parcial: '' };
-  rec = new Reconocimiento();
-  rec.lang = 'es-EC'; rec.continuous = true; rec.interimResults = true;
-  rec.onresult = ev => {
-    let parcial = '';
-    for (let i = ev.resultIndex; i < ev.results.length; i++) {
-      if (ev.results[i].isFinal) dictado.final += ev.results[i][0].transcript + ' ';
-      else parcial += ev.results[i][0].transcript;
-    }
-    dictado.parcial = parcial;
-    $('textoVivo').textContent = (dictado.final + parcial).replace(/\s+/g, ' ').trim();
-    $('textoVivo').scrollTop = $('textoVivo').scrollHeight;
-  };
-  rec.onerror = ev => {
-    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed' || ev.error === 'audio-capture') {
-      rec.sinPermiso = true; rec = null;
-      pararReloj();
-      if (puedeGrabar) { motor = 'grabacion'; grabar(turnoId); }      
-      else { motor = ''; modo = 'escrito'; modoEscrito(turnoId, 'No pudimos usar tu micrófono. Puedes escribir tu respuesta.'); }
-    }
-  };
-  const este = rec;
-  este.onend = () => { if (fase === 'grabando' && rec === este) { try { este.start(); } catch (e) {   } } if (este.alTerminar) este.alTerminar(); };
-  este.start();
-}
-
 async function iniciarGrabadora() {
   if (!flujo || !flujo.active) flujo = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
   trozos = [];
   grabadora = new MediaRecorder(flujo);
+  grabadora.inicio = Date.now();
   grabadora.ondataavailable = e => { if (e.data && e.data.size) trozos.push(e.data); };
   grabadora.start(500);
-  $('textoVivo').dataset.vacio = '🎙️ Grabando… al terminar convertiremos tu voz en texto.';
+  $('textoVivo').dataset.vacio = '🎙️ Grabando tu respuesta…';
   mostrar('nivelMic', true);
   try {     
     const ctx = audioCtx();
@@ -1112,61 +1097,62 @@ async function iniciarGrabadora() {
 
 async function terminarGrabacion(id, porTiempo) {
   pararReloj();
-  fase = 'transcribiendo';
+  fase = 'preparando';
   mostrar('btnParar', false);
-  estadoAvatar('pensando', 'Un momento…');
-  let texto = '';
-  try {
-    if (motor === 'dictado' || (rec && !grabadora)) {
-      texto = await new Promise(ok => {
-        const fin = () => ok((dictado.final + ' ' + dictado.parcial).replace(/\s+/g, ' ').trim());
-        if (!rec) return fin();
-        rec.alTerminar = fin; setTimeout(fin, 1500);
-        try { rec.stop(); } catch (e) { fin(); }
-      });
-      rec = null;
-      if (!texto && motor === 'grabacion') { if (id === turnoId) prepararVoz(id); return; }   
-    } else {
-      $('turnoMsg').textContent = 'Convirtiendo tu voz en texto…';
-      const blob = await new Promise(ok => { grabadora.onstop = () => ok(new Blob(trozos, { type: grabadora.mimeType || 'audio/webm' })); grabadora.stop(); });
-      grabadora = null;
-      const wav = await aWav(blob);
-      const r = await srv('transcribirRespuesta', TOKEN, wav);
-      texto = r.texto === '(sin audio claro)' ? '' : r.texto;
-    }
-  } catch (e) {
-    texto = '';
-  }
+  estadoAvatar('', 'Listo');
+  const g = grabadora; grabadora = null;
+  const blob = await new Promise(ok => { g.onstop = () => ok(new Blob(trozos, { type: g.mimeType || 'audio/webm' })); g.stop(); });
+  const segundos = Math.round((Date.now() - g.inicio) / 1000);
   if (id !== turnoId) return;
-  revisar(id, texto, porTiempo);
+  
+  nota = { blob: blob, segundos: segundos, archivo: comprimirNota(blob) };
+  revisarNota(porTiempo);
 }
 
  
-function revisar(id, texto, porTiempo) {
+function revisarNota(porTiempo) {
   fase = 'revisar';
-  $('respuesta').value = texto;
-  estadoAvatar('', 'Revisa tu respuesta');
+  const a = $('audioRespuesta');
+  if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
+  a.dataset.url = URL.createObjectURL(nota.blob);
+  a.src = a.dataset.url;
+  estadoAvatar('', 'Escucha tu respuesta');
   $('turnoMsg').textContent = '';
-  $('ayudaEscrito').textContent = texto
-    ? (porTiempo ? 'Se acabó el minuto. ' : '') + 'Esto es lo que entendimos. Corrige alguna palabra si hace falta y pulsa "Enviar respuesta".'
-    : 'No logramos escucharte bien. Puedes grabar de nuevo o escribir tu respuesta.';
-  mostrar('relojEscrito', false);
-  mostrar('btnRegrabar', regrabaciones < 1 || !texto);
-  panel('escrito');
-  if (!texto) $('respuesta').focus();
+  $('ayudaAudio').textContent = (porTiempo ? 'Se acabó el tiempo. ' : '') + 'Escucha tu nota de voz (' + duracion(nota.segundos) + '). ' +
+    (regrabaciones < 1 ? 'Si no te convence, puedes grabarla de nuevo una sola vez.' : 'Ya usaste tu nueva grabación: envía esta respuesta.');
+  mostrar('btnRegrabar', regrabaciones < 1);
+  panel('audio');
 }
-$('btnRegrabar').addEventListener('click', () => { if (ocupado) return; regrabaciones++; prepararVoz(turnoId); });
+const duracion = s => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+$('btnRegrabar').addEventListener('click', () => {
+  if (ocupado || regrabaciones >= 1) return;
+  regrabaciones++; nota = null; $('audioRespuesta').pause();
+  prepararVoz(turnoId);
+});
+$('btnEnviarAudio').addEventListener('click', enviarNota);
+
+async function enviarNota() {
+  if (!nota || ocupado) return;
+  $('audioRespuesta').pause();
+  bloquear(true);
+  let archivo;
+  try { archivo = await nota.archivo; }
+  catch (e) { bloquear(false); $('ayudaAudio').textContent = 'No pudimos preparar tu nota de voz. Grábala de nuevo o escribe tu respuesta.'; mostrar('btnRegrabar', true); regrabaciones = 0; return; }
+  archivo.segundos = nota.segundos;
+  agregarMsg('🎙️ Nota de voz · ' + duracion(nota.segundos), 'yo');
+  ultimoEnvio = 'audio';
+  try { await mensajeIA(srv('responderAudio', TOKEN, archivo)); }
+  catch (e) {   }
+}
 
  
 function modoEscrito(id, aviso) {
   fase = 'escrito';
   pararReloj();
-  if (rec) { try { rec.abort(); } catch (e) {   } rec = null; }
   if (grabadora) { try { grabadora.stop(); } catch (e) {   } grabadora = null; }
   estadoAvatar('', 'Te leo');
   $('turnoMsg').textContent = '';
   $('ayudaEscrito').textContent = aviso || 'Escribe tu respuesta y pulsa "Enviar respuesta".';
-  mostrar('btnRegrabar', false);
   panel('escrito');
   $('respuesta').focus();
   if (TIEMPOS.escrita > 0) {
@@ -1191,8 +1177,9 @@ $('btnModo').addEventListener('click', () => {
   if (modo === 'escrito') modoEscrito(turnoId, ''); else { pararReloj(); prepararVoz(turnoId); }
 });
 
- 
-async function aWav(blob) {
+
+
+async function muestras16k(blob) {
   const ctx = audioCtx();
   const datos = await blob.arrayBuffer();
   const audio = await new Promise((ok, err) => ctx.decodeAudioData(datos, ok, err));
@@ -1200,22 +1187,39 @@ async function aWav(blob) {
   const off = new Off(1, Math.max(1, Math.ceil(audio.duration * sr)), sr);
   const src = off.createBufferSource(); src.buffer = audio; src.connect(off.destination); src.start(0);
   const r = await off.startRendering();
-  const d = r.getChannelData(0), buf = new ArrayBuffer(44 + d.length * 2), v = new DataView(buf);
-  const txt = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
-  txt(0, 'RIFF'); v.setUint32(4, 36 + d.length * 2, true); txt(8, 'WAVE'); txt(12, 'fmt ');
-  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true);
-  v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); txt(36, 'data'); v.setUint32(40, d.length * 2, true);
-  for (let i = 0; i < d.length; i++) { const s = Math.max(-1, Math.min(1, d[i])); v.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true); }
-  let bin = ''; const bytes = new Uint8Array(buf);
+  const f = r.getChannelData(0), pcm = new Int16Array(f.length);
+  for (let i = 0; i < f.length; i++) { const s = Math.max(-1, Math.min(1, f[i])); pcm[i] = s < 0 ? s * 0x8000 : s * 0x7fff; }
+  return pcm;
+}
+function aBase64(bytes) {
+  let bin = '';
   for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
   return btoa(bin);
+}
+async function comprimirNota(blob) {
+  const pcm = await muestras16k(blob);
+  if (window.lamejs && lamejs.Mp3Encoder) {
+    const enc = new lamejs.Mp3Encoder(1, 16000, 32), partes = [];
+    for (let i = 0; i < pcm.length; i += 1152) { const b = enc.encodeBuffer(pcm.subarray(i, i + 1152)); if (b.length) partes.push(new Uint8Array(b)); }
+    const fin = enc.flush(); if (fin.length) partes.push(new Uint8Array(fin));
+    const total = partes.reduce((s, p) => s + p.length, 0), mp3 = new Uint8Array(total);
+    let o = 0; partes.forEach(p => { mp3.set(p, o); o += p.length; });
+    return { base64: aBase64(mp3), mime: 'audio/mpeg' };
+  }
+  const buf = new ArrayBuffer(44 + pcm.length * 2), v = new DataView(buf);
+  const txt = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  txt(0, 'RIFF'); v.setUint32(4, 36 + pcm.length * 2, true); txt(8, 'WAVE'); txt(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 16000, true);
+  v.setUint32(28, 32000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); txt(36, 'data'); v.setUint32(40, pcm.length * 2, true);
+  new Int16Array(buf, 44).set(pcm);
+  return { base64: aBase64(new Uint8Array(buf)), mime: 'audio/wav' };
 }
 
  
 async function mensajeIA(promesa) {
   bloquear(true); pararReloj(); fase = 'espera';
   panel(''); $('turnoMsg').textContent = '';
-  estadoAvatar('pensando', 'Pensando…');
+  estadoAvatar('pensando', ultimoEnvio === 'audio' ? 'Escuchando tu respuesta…' : 'Pensando…');
   const temp = agregarMsg('', 'ia escribiendo');
   try {
     const r = await promesa;
@@ -1223,6 +1227,7 @@ async function mensajeIA(promesa) {
     agregarMsg(r.mensaje, 'ia');
     $('barraProgreso').style.width = Math.round((r.progreso || 0) * 100) + '%';
     $('turnoMsg').textContent = 'Escucha la pregunta…';
+    ultimoEnvio = 'texto';
     await hablar(r.mensaje, r.audio);
     if (r.finalizar) return cerrarEntrevista();
     iniciarTurno();
@@ -1231,14 +1236,15 @@ async function mensajeIA(promesa) {
     estadoAvatar('', 'Hubo un problema');
     agregarMsg('⚠️ ' + e.message + ' Intenta enviar tu respuesta de nuevo.', 'ia');
     bloquear(false);
-    fase = 'escrito'; panel('escrito');
+    if (ultimoEnvio === 'audio' && nota) { fase = 'revisar'; panel('audio'); }
+    else { fase = 'escrito'; panel('escrito'); }
     throw e;
   }
 }
 
 $('btnComenzar').addEventListener('click', async () => {
   desbloquearVoz();
-  if (motor === 'grabacion') {           
+  if (motor) {                           
     try { flujo = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); }
     catch (e) { motor = ''; modo = 'escrito'; }
   }
@@ -1255,6 +1261,7 @@ async function enviar() {
   pararReloj();
   agregarMsg(texto, 'yo');
   $('respuesta').value = '';
+  ultimoEnvio = 'texto';
   try { await mensajeIA(srv('responderEntrevista', TOKEN, texto)); }
   catch (e) { $('respuesta').value = texto; }
 }
@@ -1272,7 +1279,6 @@ async function cerrarEntrevista() {
   if (terminada) return;
   terminada = true;
   turnoId++; pararReloj(); bloquear(true); panel('');
-  if (rec) { try { rec.abort(); } catch (e) {   } }
   if (flujo) flujo.getTracks().forEach(t => t.stop());
   $('barraProgreso').style.width = '100%';
   ventana('', 'Guardando tu entrevista', 'Estamos registrando tu postulación completa. No cierres esta página.');

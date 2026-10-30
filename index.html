@@ -451,7 +451,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
         <li><span class="ico-r">🪪</span><div><b>Tus datos</b><span>Cédula o pasaporte, correo, celular y ciudad donde vives.</span></div><em class="obl">Obligatorio</em></li>
         <li><span class="ico-r">💵</span><div><b>Tu aspiración salarial</b><span>Cuánto esperas ganar al mes, en dólares (una sola cifra).</span></div><em class="obl">Obligatorio</em></li>
         <li><span class="ico-r">🔗</span><div><b>Tu perfil de LinkedIn</b><span>El enlace, si tienes uno.</span></div><em>Opcional</em></li>
-        <li><span class="ico-r">🎙️</span><div><b>Un lugar tranquilo para la entrevista</b><span>Unos 10 minutos con buena conexión. Son 5 preguntas: tendrás 5 segundos para prepararte y hasta 1 minuto para responder hablando (permite el micrófono). También puedes escribir.</span></div><em class="obl">Necesario</em></li>
+        <li><span class="ico-r">🎙️</span><div><b>Un lugar tranquilo para la entrevista</b><span>Unos 10 minutos con buena conexión. Son 5 preguntas: tendrás <span class="t-prep">10</span> segundos para prepararte y hasta 1 minuto para responder hablando (permite el micrófono). También puedes escribir.</span></div><em class="obl">Necesario</em></li>
       </ul>
       <p class="nota-antes">No cierres la página durante el proceso. Si se interrumpe, vuelve a este mismo enlace con tu correo y continúas donde te quedaste.</p>
       <button type="button" class="btn primario" id="btnListo">Tengo todo listo, empezar →</button>
@@ -595,7 +595,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
         <div class="chat" id="chat"></div>
         <div class="inicio guia" id="inicioEntrevista">
           <b class="guia-t">Antes de empezar: cómo responder bien</b>
-          <p>Son <b>5 preguntas</b>. En cada una tendrás <b>5 segundos</b> para pensar y hasta <b>1 minuto</b> para responder con una nota de voz, que podrás escuchar y grabar de nuevo una vez.</p>
+          <p>Son <b>5 preguntas</b>. En cada una tendrás <b><span class="t-prep">10</span> segundos</b> para pensar y hasta <b>1 minuto</b> para responder con una nota de voz, que podrás escuchar y grabar de nuevo una vez.</p>
           <p>La mayoría de preguntas te pide contar <b>una experiencia real</b>. Una buena respuesta tiene 4 partes:</p>
           <ol class="pasos-guia">
             <li><span>📍</span><div><b>La situación</b>Dónde trabajabas y qué estaba pasando.</div></li>
@@ -683,7 +683,8 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
   const TOKEN_INICIAL = '' || PARAMS_URL.get('t') || '';
   const MAX_MB = Number('10');
   const AVATAR_FOTO = '';
-  const TIEMPOS = JSON.parse('{\x22prep\x22:5,\x22voz\x22:60,\x22escrita\x22:120,\x22stt\x22:\x22auto\x22}');
+  const TIEMPOS = JSON.parse('{\x22prep\x22:10,\x22voz\x22:60,\x22escrita\x22:120,\x22stt\x22:\x22auto\x22}');
+  document.querySelectorAll('.t-prep').forEach(el => { el.textContent = TIEMPOS.prep; });
 </script>
 <script>
 

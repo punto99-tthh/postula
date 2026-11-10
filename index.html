@@ -143,7 +143,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
   .proc-icono { width: 64px; height: 64px; margin: 0 auto 16px; position: relative; }
   .proc-icono .anillo { position: absolute; inset: 0; border-radius: 50%; border: 5px solid var(--azul-claro);
     border-top-color: var(--azul); border-right-color: var(--lima); animation: giro .8s linear infinite; }
-  .proc-icono .centro { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; font-size: 18px; letter-spacing: -.04em; color: var(--azul); }
+  .proc-icono .centro { position: absolute; inset: 0; padding: 0; margin: 0; display: grid; place-items: center; line-height: 1; text-align: center; font-weight: 700; font-size: 18px; letter-spacing: -.04em; color: var(--azul); }
   .proc-caja h3 { font-size: 20px; margin-bottom: 6px; }
   .proc-caja p { margin: 0; font-family: var(--f-comp); font-size: 13px; color: var(--suave); white-space: pre-wrap; text-align: center; }
   .proc-caja .puntos::after { content: ''; animation: puntos 1.2s steps(4, end) infinite; }
@@ -171,8 +171,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   }
-</style>
-  <script async src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
+</style>  <script async src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
   <style>
      
     .barra { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px; padding: 12px 28px;
@@ -448,7 +447,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
       <ul class="requisitos">
         <li><span class="ico-r">📄</span><div><b>Tu hoja de vida</b><span>En PDF o como foto (PNG o JPG), máximo 10 MB. Si postulas desde el celular, tenla guardada en el teléfono o en Drive.</span></div><em class="obl">Obligatorio</em></li>
         <li><span class="ico-r">🎨</span><div><b>Tu portafolio</b><span>Si tienes: un archivo PDF o imagen, o el enlace a tu Behance, web o Drive.</span></div><em>Opcional</em></li>
-        <li><span class="ico-r">🪪</span><div><b>Tus datos</b><span>Cédula o pasaporte, correo, celular y ciudad donde vives.</span></div><em class="obl">Obligatorio</em></li>
+        <li><span class="ico-r">🪪</span><div><b>Tus datos</b><span>Cédula o pasaporte, fecha de nacimiento, correo, celular y ciudad donde vives.</span></div><em class="obl">Obligatorio</em></li>
         <li><span class="ico-r">💵</span><div><b>Tu aspiración salarial</b><span>Cuánto esperas ganar al mes, en dólares (una sola cifra).</span></div><em class="obl">Obligatorio</em></li>
         <li><span class="ico-r">🔗</span><div><b>Tu perfil de LinkedIn</b><span>El enlace, si tienes uno.</span></div><em>Opcional</em></li>
         <li><span class="ico-r">🎙️</span><div><b>Un lugar tranquilo para la entrevista</b><span>Unos 10 minutos con buena conexión. Son 5 preguntas: tendrás <span class="t-prep">10</span> segundos para prepararte y hasta 1 minuto para responder hablando (permite el micrófono). También puedes escribir.</span></div><em class="obl">Necesario</em></li>
@@ -463,6 +462,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
         <label class="campo">Nombres *<input id="nombres" autocomplete="given-name"></label>
         <label class="campo">Apellidos *<input id="apellidos" autocomplete="family-name"></label>
         <label class="campo">Cédula o pasaporte *<input id="identificacion" maxlength="20"></label>
+        <label class="campo">Fecha de nacimiento *<input id="nacimiento" type="date" autocomplete="bday" min="1940-01-01"></label>
         <label class="campo">Correo electrónico *<input id="email" type="email" inputmode="email" autocomplete="email"></label>
         <label class="campo">Teléfono celular *<input id="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="09…"></label>
         <div class="campo">Ciudad de residencia *
@@ -663,7 +663,7 @@ window.google = { script: { run: (function crear(ok, mal) { return new Proxy({},
   <section class="tarjeta centro oculto" id="sFin">
     <div class="fin-icono">✓</div>
     <h2 id="finTitulo">¡Gracias por tu tiempo!</h2>
-    <p id="finTexto">Recibimos tu postulación y tu entrevista. Nuestro equipo de Talento Humano revisará tu perfil y te contactará por correo electrónico.</p>
+    <p id="finTexto">Recibimos tu postulación y tu entrevista. Revisaremos tu perfil para ver si se ajusta al cargo. Si avanzas a la siguiente etapa, nuestro equipo de Talento Humano se comunicará contigo por WhatsApp o correo electrónico.</p>
   </section>
 </main>
 
@@ -830,6 +830,13 @@ function leerArchivo(file) {
   });
 }
 
+ 
+function edadDe(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); if (!m) return NaN;
+  const h = new Date(); let e = h.getFullYear() - Number(m[1]);
+  if (h.getMonth() + 1 < Number(m[2]) || (h.getMonth() + 1 === Number(m[2]) && h.getDate() < Number(m[3]))) e--;
+  return e;
+}
 $('form').addEventListener('submit', async e => {
   e.preventDefault();
   error('');
@@ -839,6 +846,9 @@ $('form').addEventListener('submit', async e => {
   const faltan = obligatorios.filter(([id]) => !v(id));
   if (faltan.length) { $(faltan[0][0]).focus(); return error('Completa: ' + faltan.map(f => f[1]).join(', ') + '.'); }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'))) { $('email').focus(); return error('Revisa tu correo electrónico.'); }
+  const edad = edadDe(v('nacimiento'));
+  if (!v('nacimiento')) { $('nacimiento').focus(); return error('Ingresa tu fecha de nacimiento.'); }
+  if (!(edad >= 15 && edad <= 80)) { $('nacimiento').focus(); return error('Revisa tu fecha de nacimiento.'); }
   if (!valorCiudad()) { (ciudadElegida && ciudadElegida.otra ? $('ciudadOtra') : $('ciudad')).focus(); return error('Elige tu ciudad de residencia de la lista.'); }
   const asp = Number(v('aspiracion'));
   if (!(asp > 0)) { $('aspiracion').focus(); return error('Ingresa tu aspiración salarial mensual en USD.'); }
@@ -854,7 +864,7 @@ $('form').addEventListener('submit', async e => {
   try {
     const [cv, portafolio] = await Promise.all([leerArchivo($('cv').files[0]), leerArchivo($('portafolio').files[0])]);
     const r = await srv('registrarPostulacion', {
-      idProceso: vacante.id, nombres: v('nombres'), apellidos: v('apellidos'), identificacion: v('identificacion'),
+      idProceso: vacante.id, nombres: v('nombres'), apellidos: v('apellidos'), identificacion: v('identificacion'), fechaNacimiento: v('nacimiento'),
       email: v('email'), telefono: v('telefono'), ciudad: valorCiudad(), aspiracion: asp,
       disponibilidad: v('disponibilidad'), linkedin: v('linkedin'), linkPortafolio: v('linkPortafolio'),
       consentimiento: true, cv: cv, portafolio: portafolio
@@ -991,7 +1001,7 @@ async function abrirSala() {
   const d = await srv('datosPostulacion', TOKEN);
   if (d.completada) {
     $('finTitulo').textContent = '¡Gracias, ' + d.nombre + '!';
-    $('finTexto').textContent = 'Tu postulación a ' + d.cargo + ' ya está completa. Talento Humano te contactará por correo electrónico.';
+    $('finTexto').textContent = 'Tu postulación a ' + d.cargo + ' ya está completa. Revisaremos tu perfil y, si avanzas, Talento Humano se comunicará contigo por WhatsApp o correo electrónico.';
     return seccion('sFin', 3);
   }
   $('cargoEntrevista').textContent = d.cargo;
